@@ -15,9 +15,12 @@ import { useRouter } from "next/navigation";
 import {
   AlertCircle,
   Check,
+  ClipboardCopy,
   CloudUpload,
   Copy,
   EllipsisVertical,
+  Eye,
+  FileDown,
   History,
   LoaderCircle,
   Save,
@@ -60,6 +63,10 @@ import {
 } from "@/lib/anamneses/answers";
 import { sectionHeading } from "@/lib/templates/format";
 import type { EditableSection, EditableTemplate } from "@/lib/templates/schema";
+import { ExportSheet } from "@/components/anamnesis-export/export-sheet";
+import { preloadPdf } from "@/components/anamnesis-export/export-actions";
+import { useAnamnesisExport } from "@/components/anamnesis-export/use-anamnesis-export";
+import { buildAnamnesisExport } from "@/lib/anamneses/export";
 import { FieldInput } from "./field-input";
 
 type AnamnesisFormProps = {
@@ -70,6 +77,8 @@ type AnamnesisFormProps = {
   templateDeleted: boolean;
   createdAt: string;
   updatedAt: string;
+  /** Nome e instituição do perfil, para o cabeçalho do PDF. */
+  author: { fullName: string | null; institution: string | null };
 };
 
 type SaveStatus = "saved" | "pending" | "saving" | "error" | "invalid";
@@ -96,6 +105,7 @@ export function AnamnesisForm({
   templateDeleted,
   createdAt,
   updatedAt,
+  author,
 }: AnamnesisFormProps) {
   const router = useRouter();
   const titleId = useId();
@@ -108,6 +118,8 @@ export function AnamnesisForm({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [lastSavedAt, setLastSavedAt] = useState(updatedAt);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const exporter = useAnamnesisExport();
   const [busy, startBusy] = useTransition();
   const [saving, startSaving] = useTransition();
 
@@ -217,6 +229,17 @@ export function AnamnesisForm({
 
   const progress = useMemo(() => countAnswered(snapshot, answers), [snapshot, answers]);
 
+  // Exporta o que está na tela (inclusive o que ainda não foi salvo).
+  const buildExport = useCallback(
+    () =>
+      buildAnamnesisExport({ title, patientLabel, createdAt, snapshot, answers, author }),
+    [title, patientLabel, createdAt, snapshot, answers, author],
+  );
+  const previewDocument = useMemo(
+    () => (previewOpen ? buildExport() : null),
+    [previewOpen, buildExport],
+  );
+
   function duplicate() {
     startBusy(async () => {
       await flush();
@@ -325,10 +348,10 @@ export function AnamnesisForm({
                 variant="ghost"
                 size="lg"
                 className="h-10 rounded-xl px-3"
-                disabled={busy}
+                disabled={busy || exporter.downloading}
                 aria-label="Mais ações"
               >
-                {busy ? (
+                {busy || exporter.downloading ? (
                   <LoaderCircle className="animate-spin" aria-hidden />
                 ) : (
                   <EllipsisVertical aria-hidden />
@@ -336,6 +359,15 @@ export function AnamnesisForm({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuItem onSelect={() => void exporter.download(buildExport())}>
+                <FileDown aria-hidden />
+                Baixar PDF
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => void exporter.copy(buildExport())}>
+                <ClipboardCopy aria-hidden />
+                Copiar texto
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
               <DropdownMenuItem onSelect={duplicate}>
                 <Copy aria-hidden />
                 Duplicar
@@ -347,11 +379,28 @@ export function AnamnesisForm({
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button asChild variant="outline" size="lg" className="h-10 rounded-xl px-4">
-            <Link href="/historico">
+          <Button
+            asChild
+            variant="outline"
+            size="lg"
+            className="h-10 rounded-xl px-3 sm:px-4"
+          >
+            <Link href="/historico" aria-label="Histórico">
               <History aria-hidden />
-              Histórico
+              <span className="hidden sm:inline">Histórico</span>
             </Link>
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="lg"
+            className="h-10 rounded-xl px-4"
+            onClick={() => setPreviewOpen(true)}
+            onPointerEnter={preloadPdf}
+            onFocus={preloadPdf}
+          >
+            <Eye aria-hidden />
+            Prévia
           </Button>
           <Button
             type="button"
@@ -372,6 +421,14 @@ export function AnamnesisForm({
           </Button>
         </div>
       </div>
+
+      {previewDocument ? (
+        <ExportSheet
+          open={previewOpen}
+          onOpenChange={setPreviewOpen}
+          document={previewDocument}
+        />
+      ) : null}
 
       <AlertDialog open={confirmDelete} onOpenChange={setConfirmDelete}>
         <AlertDialogContent>

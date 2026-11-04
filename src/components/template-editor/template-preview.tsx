@@ -12,10 +12,11 @@ function upper(value: string): string {
  * O que aparece no lugar da resposta, conforme o tipo do campo. Em seções de
  * uma linha, texto mostra o nome do campo (ex.: `#ID: INICIAIS, IDADE`).
  */
-function placeholder(field: EditableField, textAsLabel = false): string {
+function placeholder(field: EditableField, textAsLabel = false, several = false): string {
   switch (field.type) {
     case "yes_no":
-      return "SIM/NÃO";
+      // Em linha, leva o rótulo, como na exportação ("TABAGISMO: NÃO").
+      return several && field.label.trim() ? `${upper(field.label.trim())}: SIM/NÃO` : "SIM/NÃO";
     case "number":
       return "0";
     case "date":
@@ -72,7 +73,9 @@ export const TemplatePreview = memo(function TemplatePreview({
               <p key={section.id}>
                 {heading}{" "}
                 <Answer>
-                  {section.fields.map((field) => placeholder(field, true)).join(", ")}
+                  {section.fields
+                    .map((field) => placeholder(field, true, section.fields.length > 1))
+                    .join(", ")}
                 </Answer>
               </p>
             );

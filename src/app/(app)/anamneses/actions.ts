@@ -9,12 +9,17 @@ import {
   sanitizeAnswers,
   saveAnamnesisInputSchema,
 } from "@/lib/anamneses/answers";
-import { parseSnapshot } from "@/lib/data/anamneses";
+import { buildAnamnesisExport, type AnamnesisExport } from "@/lib/anamneses/export";
+import { getAnamnesis, parseSnapshot } from "@/lib/data/anamneses";
+import { getProfile } from "@/lib/data/profile";
 import { templateSchema } from "@/lib/templates/schema";
 
 export type ActionResult = { ok: true } | { ok: false; message: string };
 export type SaveAnamnesisResult =
   | { ok: true; updatedAt: string }
+  | { ok: false; message: string };
+export type ExportAnamnesisResult =
+  | { ok: true; document: AnamnesisExport }
   | { ok: false; message: string };
 export type DuplicateAnamnesisResult = { ok: true; id: string } | { ok: false; message: string };
 
@@ -134,4 +139,27 @@ export async function deleteAnamnesis(id: string): Promise<ActionResult> {
 
   refresh();
   return { ok: true };
+}
+
+/** Documento formatado (o que está salvo) para baixar o PDF ou copiar pelo histórico. */
+export async function getAnamnesisExport(id: string): Promise<ExportAnamnesisResult> {
+  if (!idSchema.safeParse(id).success) return { ok: false, message: "Anamnese inválida." };
+
+  try {
+    const [anamnesis, profile] = await Promise.all([getAnamnesis(id), getProfile()]);
+    if (!anamnesis) return { ok: false, message: "Esta anamnese não existe mais." };
+    return {
+      ok: true,
+      document: buildAnamnesisExport({
+        title: anamnesis.title,
+        patientLabel: anamnesis.patientLabel,
+        createdAt: anamnesis.createdAt,
+        snapshot: anamnesis.snapshot,
+        answers: anamnesis.answers,
+        author: { fullName: profile.fullName, institution: profile.institution },
+      }),
+    };
+  } catch {
+    return { ok: false, message: "Não foi possível carregar a anamnese." };
+  }
 }

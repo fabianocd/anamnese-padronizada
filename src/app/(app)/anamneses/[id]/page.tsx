@@ -6,6 +6,7 @@ import { AnamnesisForm } from "@/components/anamnesis-form/anamnesis-form";
 import { PageHeader } from "@/components/page-header";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getAnamnesis } from "@/lib/data/anamneses";
+import { getProfile } from "@/lib/data/profile";
 
 export const metadata: Metadata = { title: "Anamnese" };
 
@@ -14,7 +15,7 @@ export default function AnamnesisPage({ params }: PageProps<"/anamneses/[id]">) 
     <>
       <PageHeader
         title="Anamnese"
-        description="Preencha normalmente; tudo é salvo automaticamente. No PDF, o texto sai em caixa alta e campos vazios são omitidos."
+        description="Preencha normalmente; tudo é salvo automaticamente. Em “Prévia” você vê como fica o PDF e copia o texto formatado."
       />
       <Suspense fallback={<FormSkeleton />}>
         {params.then(({ id }) => (
@@ -27,7 +28,7 @@ export default function AnamnesisPage({ params }: PageProps<"/anamneses/[id]">) 
 
 async function AnamnesisLoader({ id }: { id: string }) {
   if (!z.uuid().safeParse(id).success) notFound();
-  const anamnesis = await getAnamnesis(id);
+  const [anamnesis, profile] = await Promise.all([getAnamnesis(id), getProfile()]);
   if (!anamnesis) notFound();
 
   return (
@@ -45,6 +46,7 @@ async function AnamnesisLoader({ id }: { id: string }) {
       templateDeleted={anamnesis.templateId === null}
       createdAt={anamnesis.createdAt}
       updatedAt={anamnesis.updatedAt}
+      author={{ fullName: profile.fullName, institution: profile.institution }}
     />
   );
 }

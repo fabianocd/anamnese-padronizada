@@ -1,6 +1,7 @@
 /**
  * Regras de formatação da anamnese (ver CLAUDE.md), compartilhadas pela
- * prévia do editor e, na fase 6, pelo PDF e pelo "copiar texto".
+ * prévia do editor de modelo e pelo formatador da exportação
+ * (`src/lib/anamneses/export.ts`: prévia, PDF e "copiar texto").
  */
 
 type SectionLike = {

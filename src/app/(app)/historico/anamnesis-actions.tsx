@@ -2,9 +2,23 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
-import { Copy, EllipsisVertical, FolderOpen, LoaderCircle, Trash2 } from "lucide-react";
+import {
+  ClipboardCopy,
+  Copy,
+  EllipsisVertical,
+  FileDown,
+  FolderOpen,
+  LoaderCircle,
+  Trash2,
+} from "lucide-react";
 import { toast } from "sonner";
-import { deleteAnamnesis, duplicateAnamnesis } from "@/app/(app)/anamneses/actions";
+import {
+  deleteAnamnesis,
+  duplicateAnamnesis,
+  getAnamnesisExport,
+} from "@/app/(app)/anamneses/actions";
+import { preloadPdf } from "@/components/anamnesis-export/export-actions";
+import { useAnamnesisExport } from "@/components/anamnesis-export/use-anamnesis-export";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -27,6 +41,15 @@ import {
 export function AnamnesisActions({ id, title }: { id: string; title: string }) {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [pending, startTransition] = useTransition();
+  const exporter = useAnamnesisExport();
+  const busy = pending || exporter.downloading || exporter.copying;
+
+  async function load() {
+    const result = await getAnamnesisExport(id);
+    if (result.ok) return result.document;
+    toast.error(result.message);
+    return null;
+  }
 
   function duplicate() {
     startTransition(async () => {
@@ -53,9 +76,10 @@ export function AnamnesisActions({ id, title }: { id: string; title: string }) {
             size="icon"
             className="rounded-xl text-muted-foreground"
             aria-label={`Ações da anamnese ${title}`}
-            disabled={pending}
+            disabled={busy}
+            onPointerEnter={preloadPdf}
           >
-            {pending ? (
+            {busy ? (
               <LoaderCircle className="animate-spin" aria-hidden />
             ) : (
               <EllipsisVertical aria-hidden />
@@ -69,6 +93,15 @@ export function AnamnesisActions({ id, title }: { id: string; title: string }) {
               Abrir
             </Link>
           </DropdownMenuItem>
+          <DropdownMenuItem onSelect={() => void exporter.download(load)}>
+            <FileDown aria-hidden />
+            Baixar PDF
+          </DropdownMenuItem>
+          <DropdownMenuItem onSelect={() => void exporter.copy(load)}>
+            <ClipboardCopy aria-hidden />
+            Copiar texto
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
           <DropdownMenuItem onSelect={duplicate}>
             <Copy aria-hidden />
             Duplicar
