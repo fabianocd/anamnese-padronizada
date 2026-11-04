@@ -503,9 +503,14 @@ export function TemplateEditor({
           </ol>
         </div>
 
+        {/*
+          No desktop a prévia gruda entre as barras fixas, sem ficar por baixo delas:
+          topo = barra do topo (top-3 + h-16) + espaço (5.5rem);
+          base = barra de salvar (bottom-3 + ~4rem de altura) + espaço (5.75rem).
+        */}
         <aside
           className={cn(
-            "glass min-w-0 rounded-3xl p-4 sm:p-5 lg:sticky lg:top-3 lg:max-h-[calc(100dvh-1.5rem)] lg:overflow-y-auto",
+            "glass min-w-0 rounded-3xl p-4 sm:p-5 lg:sticky lg:top-[5.5rem] lg:max-h-[calc(100dvh-11.25rem)] lg:overflow-y-auto",
             view === "edit" && "hidden lg:block",
           )}
           aria-label="Prévia do modelo"
