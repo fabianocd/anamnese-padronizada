@@ -1,24 +1,23 @@
 "use client";
 
-import { useMemo, useSyncExternalStore } from "react";
+import { useCallback, useMemo, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FileQuestion, FileUp, Info, Sparkles } from "lucide-react";
+import { FileQuestion, FileUp } from "lucide-react";
 import { EmptyState } from "@/components/empty-state";
-import { Badge } from "@/components/ui/badge";
+import { EditorSkeleton } from "@/components/template-editor/editor-skeleton";
+import type { SpecialtyChoice } from "@/components/template-editor/specialty-picker";
+import type { EditorState } from "@/components/template-editor/state";
+import { TemplateEditor } from "@/components/template-editor/template-editor";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   clearTemplateDraft,
   parseTemplateDraft,
   readTemplateDraftRaw,
+  saveTemplateDraft,
   subscribeTemplateDraft,
 } from "@/lib/templates/draft-storage";
-import {
-  FIELD_TYPE_LABELS,
-  type TemplateDraft,
-  type TemplateSection,
-} from "@/lib/templates/schema";
+import type { TemplateDraft } from "@/lib/templates/schema";
 
 /** `undefined` no servidor/hidratação: o rascunho só existe no navegador. */
 function useTemplateDraft(): TemplateDraft | null | undefined {
@@ -30,20 +29,35 @@ function useTemplateDraft(): TemplateDraft | null | undefined {
   return useMemo(() => (raw === undefined ? undefined : parseTemplateDraft(raw)), [raw]);
 }
 
-export function DraftReview() {
+export function DraftReview({ specialties }: { specialties: SpecialtyChoice[] }) {
   const router = useRouter();
   const draft = useTemplateDraft();
+  // O rascunho do primeiro carregamento alimenta o editor; depois disso o
+  // editor é a fonte (e só escreve de volta no sessionStorage).
+  const [initialDraft, setInitialDraft] = useState<TemplateDraft | null>(null);
+  const [leaving, setLeaving] = useState(false);
 
-  if (draft === undefined) {
-    return (
-      <div className="flex flex-col gap-3" aria-busy>
-        <Skeleton className="h-24 rounded-3xl" />
-        <Skeleton className="h-64 rounded-3xl" />
-      </div>
-    );
-  }
+  if (draft && !initialDraft && !leaving) setInitialDraft(draft);
 
-  if (draft === null) {
+  const onDraftChange = useCallback(
+    (state: EditorState) => {
+      if (!initialDraft) return;
+      saveTemplateDraft({
+        ...initialDraft,
+        title: state.title,
+        schema: { sections: state.sections },
+        specialtyId: state.specialtyId,
+        isDefault: state.isDefault,
+      });
+    },
+    [initialDraft],
+  );
+
+  if (leaving) return <EditorSkeleton />;
+
+  if (draft === undefined) return <EditorSkeleton />;
+
+  if (!initialDraft) {
     return (
       <EmptyState
         icon={FileQuestion}
@@ -61,96 +75,32 @@ export function DraftReview() {
     );
   }
 
-  const fieldCount = draft.schema.sections.reduce((sum, section) => sum + section.fields.length, 0);
-
-  function startOver() {
-    clearTemplateDraft();
-    router.push("/modelos/novo");
-  }
+  // Especialidade do rascunho pode ter sido excluída em outra aba.
+  const specialtyId = specialties.some((item) => item.id === initialDraft.specialtyId)
+    ? initialDraft.specialtyId
+    : null;
 
   return (
-    <div className="flex flex-col gap-4">
-      <section className="glass flex flex-col gap-4 rounded-3xl p-4 sm:flex-row sm:items-center sm:justify-between sm:p-6">
-        <div className="min-w-0">
-          <p className="flex items-center gap-1.5 text-xs font-medium tracking-wide text-primary uppercase">
-            {draft.origin === "ai" ? <Sparkles className="size-3.5" aria-hidden /> : null}
-            {draft.origin === "ai" ? "Rascunho gerado pela IA" : "Modelo em branco"}
-          </p>
-          <h2 className="mt-1 truncate font-heading text-2xl font-semibold tracking-tight">
-            {draft.title || "Sem título"}
-          </h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {draft.schema.sections.length} seções · {fieldCount} campos
-          </p>
-        </div>
-        <Button
-          type="button"
-          variant="outline"
-          size="lg"
-          className="h-10 rounded-xl px-4"
-          onClick={startOver}
-        >
-          <FileUp aria-hidden />
-          Enviar outro arquivo
-        </Button>
-      </section>
-
-      <div className="flex items-start gap-2.5 rounded-xl border border-border bg-background/40 px-3 py-2.5 text-sm text-muted-foreground">
-        <Info className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />
-        <p>
-          {draft.origin === "ai"
-            ? "A IA pode errar: confira se nenhum campo ficou de fora e se os tipos fazem sentido. "
-            : ""}
-          A edição (títulos, tipos, ordem) e o salvamento do modelo chegam na próxima etapa. Este
-          rascunho fica guardado só nesta aba.
-        </p>
-      </div>
-
-      <ol className="flex flex-col gap-3">
-        {draft.schema.sections.map((section) => (
-          <SectionPreview key={section.id} section={section} />
-        ))}
-      </ol>
-    </div>
-  );
-}
-
-function SectionPreview({ section }: { section: TemplateSection }) {
-  const heading = `#${section.abbreviation ?? section.title}:`;
-  return (
-    <li className="glass rounded-2xl p-4 sm:p-5">
-      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-        <h3 className="font-heading text-base font-semibold tracking-tight">{heading}</h3>
-        {section.abbreviation ? (
-          <span className="text-sm text-muted-foreground">{section.title}</span>
-        ) : null}
-        {section.singleLine ? (
-          <Badge variant="outline" className="ml-auto">
-            Linha única
-          </Badge>
-        ) : null}
-      </div>
-
-      <ul className="mt-3 flex flex-col divide-y divide-border">
-        {section.fields.map((field) => (
-          <li key={field.id} className="flex flex-col gap-1 py-2 first:pt-0 last:pb-0 sm:flex-row sm:items-start sm:gap-3">
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium">-{field.label}</p>
-              {field.hint ? (
-                <p className="text-xs text-muted-foreground">{field.hint}</p>
-              ) : null}
-              {field.options?.length ? (
-                <p className="text-xs text-muted-foreground">
-                  Opções: {field.options.join(" · ")}
-                </p>
-              ) : null}
-            </div>
-            <Badge variant="secondary" className="shrink-0">
-              {FIELD_TYPE_LABELS[field.type]}
-            </Badge>
-          </li>
-        ))}
-      </ul>
-    </li>
+    <TemplateEditor
+      initial={{
+        title: initialDraft.title,
+        specialtyId,
+        isDefault: initialDraft.isDefault,
+        schema: initialDraft.schema,
+      }}
+      specialties={specialties}
+      origin={initialDraft.origin}
+      sourceFilePath={initialDraft.sourceFilePath}
+      onDraftChange={onDraftChange}
+      onCreated={() => {
+        setLeaving(true);
+        clearTemplateDraft();
+      }}
+      onDiscard={() => {
+        setLeaving(true);
+        clearTemplateDraft();
+        router.push("/modelos/novo");
+      }}
+    />
   );
 }

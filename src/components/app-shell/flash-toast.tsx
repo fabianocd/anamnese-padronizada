@@ -7,6 +7,8 @@ import { toast } from "sonner";
 const messages: Record<string, string> = {
   "senha-alterada": "Senha alterada com sucesso.",
   "conta-confirmada": "E-mail confirmado. Bem-vindo(a)!",
+  "modelo-criado": "Modelo salvo na sua conta.",
+  "modelo-excluido": "Modelo excluído.",
 };
 
 /** Mostra um toast para `?aviso=...` e limpa o parâmetro da URL. */

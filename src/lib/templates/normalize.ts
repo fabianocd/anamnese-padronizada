@@ -4,6 +4,9 @@ import {
   KNOWN_ABBREVIATIONS,
   LIMITS,
   newId,
+  type EditableField,
+  type EditableSection,
+  type EditableTemplate,
   type Template,
   type TemplateField,
   type TemplateSection,
@@ -82,6 +85,7 @@ function clip(value: string, max: number): string {
 function cleanHeading(value: string): string {
   return value
     .replace(/\s+/g, " ")
+    .trim()
     .replace(/^#+\s*/, "")
     .replace(/^\(?\d{1,3}\s*[.)\-–]\s*/, "")
     .replace(/[\s:.\-–]+$/, "")
@@ -115,6 +119,10 @@ function normalizeField(raw: AiExtraction["sections"][number]["fields"][number])
     ...(type === "select" ? { options } : {}),
     ...(hint ? { hint } : {}),
   };
+}
+
+export function isCondutaSection(section: { title: string }): boolean {
+  return comparable(cleanHeading(section.title)) === CONDUTA;
 }
 
 function condutaSection(fields: TemplateField[] = []): TemplateSection {
@@ -205,4 +213,58 @@ export function createBlankTemplate(): Template {
       condutaSection(),
     ],
   };
+}
+
+function collapse(value: string): string {
+  return value.replace(/\s+/g, " ").trim();
+}
+
+function prepareField(field: EditableField): EditableField {
+  const hint = collapse(field.hint ?? "");
+  const options =
+    field.type === "select"
+      ? [...new Set((field.options ?? []).map(collapse).filter(Boolean))]
+      : undefined;
+  return {
+    id: field.id,
+    label: upper(cleanHeading(field.label)),
+    type: field.type,
+    ...(options ? { options } : {}),
+    ...(hint ? { hint } : {}),
+  };
+}
+
+function prepareSection(section: EditableSection): EditableSection {
+  const abbreviation = upper(section.abbreviation ?? "").replace(/[#:\s]/g, "");
+  return {
+    id: section.id,
+    title: upper(cleanHeading(section.title)),
+    ...(abbreviation ? { abbreviation } : {}),
+    ...(section.singleLine ? { singleLine: true } : {}),
+    // Seção sem subcampos vira um campo de texto livre. O id é derivado do da
+    // seção para dar o mesmo resultado no editor e no servidor.
+    fields:
+      section.fields.length > 0
+        ? section.fields.map(prepareField)
+        : [{ id: `${section.id}-texto`, label: upper(cleanHeading(section.title)), type: "long_text" }],
+  };
+}
+
+/**
+ * Arruma o modelo editado antes de validar e salvar: espaços, caixa alta em
+ * títulos/siglas/rótulos, opções só em "select" (sem vazias nem repetidas) e
+ * uma única `#CONDUTA:` no fim. Não inventa conteúdo: o que continuar
+ * inválido (ex.: rótulo vazio) é apontado pela validação estrita.
+ */
+export function prepareTemplateForSave(template: EditableTemplate): EditableTemplate {
+  const sections = template.sections.map(prepareSection);
+  const regular = sections.filter((section) => !isCondutaSection(section));
+  const conduta = sections.filter(isCondutaSection);
+
+  const condutaFields = conduta.flatMap((section) => section.fields);
+  const last: EditableSection = conduta[0]
+    ? { ...conduta[0], title: CONDUTA, fields: condutaFields }
+    : condutaSection();
+
+  return { sections: [...regular, last] };
 }

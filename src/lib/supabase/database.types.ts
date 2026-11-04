@@ -164,7 +164,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      save_template: {
+        Args: {
+          p_id: string
+          p_is_default: boolean
+          p_schema: Json
+          p_source_file_path: string
+          p_specialty_id: string
+          p_title: string
+        }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never

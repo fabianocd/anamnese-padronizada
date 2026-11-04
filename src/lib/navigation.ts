@@ -40,6 +40,8 @@ const segmentLabels: Record<string, string> = {
 
 export type Crumb = { label: string; href: string };
 
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export function getBreadcrumbs(pathname: string): Crumb[] {
   const segments = pathname.split("/").filter(Boolean);
   const crumbs: Crumb[] = [];
@@ -51,6 +53,11 @@ export function getBreadcrumbs(pathname: string): Crumb[] {
       if (segments[1] !== "nova") {
         crumbs.push({ label: "Histórico", href: "/historico" });
       }
+      return;
+    }
+    // "/modelos/{id}" é o editor do modelo.
+    if (segments[index - 1] === "modelos" && UUID.test(segment)) {
+      crumbs.push({ label: "Editar modelo", href });
       return;
     }
     crumbs.push({ label: segmentLabels[segment] ?? "Detalhes", href });
