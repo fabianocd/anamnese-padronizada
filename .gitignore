@@ -42,3 +42,7 @@ next-env.d.ts
 
 # exceção: modelo de variáveis
 !.env.example
+
+# material de terceiros (só local, não publicar)
+/docs/anamnese-pediatrica-exemplo.pdf
+/docs/referencia-design.jpeg

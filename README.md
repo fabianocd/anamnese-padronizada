@@ -128,4 +128,5 @@ Se o domínio mudar, atualize essas URLs.
 
 - [`docs/PLANO.md`](docs/PLANO.md): fases, decisões tomadas e próximos passos.
 - [`CLAUDE.md`](CLAUDE.md): especificação do produto, padrão de formatação e convenções do código.
-- [`docs/anamnese-pediatrica-exemplo.pdf`](docs/anamnese-pediatrica-exemplo.pdf): ficha de exemplo para testar a extração.
+
+Para testar a extração, use qualquer ficha de anamnese em PDF ou foto, de preferência em branco, sem dados de pacientes.

@@ -115,13 +115,14 @@ Manter um `.env.example` atualizado. Configurar as mesmas variáveis na Vercel.
 
 ## Design
 
-Referência visual: `docs/referencia-design.jpeg`. Tema escuro (padrão) e claro marfim/bege, escolhidos em Configurações; cards translúcidos (glass) com bordas suaves, cantos arredondados, acento laranja nos botões principais e item ativo da sidebar. Sidebar com: Modelos, Nova anamnese, Histórico, Configurações. Topo com breadcrumb e botão "+ Nova anamnese". Responsivo (funcionar bem no celular). Interface em português.
+Referência visual: `docs/referencia-design.jpeg` (só local, fora do Git). Tema escuro (padrão) e claro marfim/bege, escolhidos em Configurações; cards translúcidos (glass) com bordas suaves, cantos arredondados, acento laranja nos botões principais e item ativo da sidebar. Sidebar com: Modelos, Nova anamnese, Histórico, Configurações. Topo com breadcrumb e botão "+ Nova anamnese". Responsivo (funcionar bem no celular). Interface em português.
 
 ## Arquivos de referência
 
 - `docs/PLANO.md`: **plano por fases, decisões já tomadas e itens futuros. Ler antes de continuar o trabalho e atualizar ao concluir cada fase.**
 - `docs/anamnese-pediatrica-exemplo.pdf`: ficha de exemplo para testar a extração.
 - `docs/referencia-design.jpeg`: referência de design.
+- Esses dois arquivos são material de terceiros: ficam só na máquina local (no `.gitignore`) e **nunca** devem ser commitados, porque o repositório é público.
 
 ## Convenções
 

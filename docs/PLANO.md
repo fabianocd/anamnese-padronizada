@@ -46,6 +46,7 @@ Marque `[x]` ao concluir cada fase. Detalhes de stack, segurança e formatação
 30. **Formato da exportação**: seções sem nenhuma resposta somem (menos a `#CONDUTA:`). Em seção de linha única com vários campos, Sim/Não leva o rótulo (`TABAGISMO: NÃO`), senão a resposta solta não diria a que se refere; a prévia do editor de modelo mostra igual. Quebras de linha do texto longo são mantidas. "Copiar texto" leva só o corpo (sem cabeçalho), para colar no prontuário.
 31. **Fonte do PDF**: Inter (OFL) em `public/fonts/` (subconjunto latino, cobre o português). Símbolos fora dele (≥, ≤, →...) são trocados por equivalentes (`>=`, `<=`, `->`). Cabeçalho do PDF com nome e instituição do perfil, quando preenchidos.
 32. **react-pdf 4.9**: `lineHeight` vai em cada texto junto com o `fontSize` (herdado da página some com o número da página; sem `fontSize` no mesmo estilo é calculado sobre 18). Títulos e campos ficam como irmãos diretos da página, para o `minPresenceAhead` levar título solto para a próxima página.
+33. **Repositório público** (portfólio). A ficha de exemplo (material da UNINTA) e o print de referência de design foram removidos de todo o histórico e ficam só na máquina local (`.gitignore`). Nunca commitar chaves, material de terceiros nem dados de pacientes.
 
 ## Para implementar no futuro
 
