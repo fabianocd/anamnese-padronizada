@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
-import { Copy, EllipsisVertical, LoaderCircle, PencilLine, Trash2 } from "lucide-react";
+import { Copy, EllipsisVertical, FilePlus2, LoaderCircle, PencilLine, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -22,11 +22,19 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { createAnamnesis } from "@/app/(app)/anamneses/actions";
 import { deleteTemplate, duplicateTemplate } from "./actions";
 
 export function TemplateActions({ id, title }: { id: string; title: string }) {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [pending, startTransition] = useTransition();
+
+  function fill() {
+    const formData = new FormData();
+    formData.set("templateId", id);
+    // A action redireciona para o formulário da nova anamnese.
+    startTransition(() => createAnamnesis(formData));
+  }
 
   function duplicate() {
     startTransition(async () => {
@@ -62,7 +70,11 @@ export function TemplateActions({ id, title }: { id: string; title: string }) {
             )}
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-44">
+        <DropdownMenuContent align="end" className="w-48">
+          <DropdownMenuItem onSelect={fill}>
+            <FilePlus2 aria-hidden />
+            Preencher anamnese
+          </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link href={`/modelos/${id}`}>
               <PencilLine aria-hidden />

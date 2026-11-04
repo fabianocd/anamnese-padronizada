@@ -55,6 +55,10 @@ export function getBreadcrumbs(pathname: string): Crumb[] {
       }
       return;
     }
+    if (segments[index - 1] === "anamneses" && UUID.test(segment)) {
+      crumbs.push({ label: "Anamnese", href });
+      return;
+    }
     // "/modelos/{id}" é o editor do modelo.
     if (segments[index - 1] === "modelos" && UUID.test(segment)) {
       crumbs.push({ label: "Editar modelo", href });
