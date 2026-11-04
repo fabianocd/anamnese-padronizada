@@ -1,13 +1,15 @@
-import { Suspense } from "react";
+import { Suspense, type ReactNode } from "react";
 import { Brand } from "./brand";
 import { NavLinks, NavLinksFallback } from "./nav-links";
 
 type SidebarContentProps = {
   onNavigate?: () => void;
+  /** Rodapé (menu do usuário), renderizado no servidor e passado como slot. */
+  footer?: ReactNode;
 };
 
 /** Conteúdo da sidebar, compartilhado entre desktop e menu do celular. */
-export function SidebarContent({ onNavigate }: SidebarContentProps) {
+export function SidebarContent({ onNavigate, footer }: SidebarContentProps) {
   return (
     <div className="flex h-full flex-col gap-6 p-4">
       <Brand />
@@ -28,6 +30,8 @@ export function SidebarContent({ onNavigate }: SidebarContentProps) {
           </Suspense>
         </div>
       </nav>
+
+      {footer}
     </div>
   );
 }

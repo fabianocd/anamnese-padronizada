@@ -74,8 +74,11 @@ O PDF deve ser limpo e legível: fonte sem serifa, boa hierarquia, cabeçalho co
 
 ## Banco de dados (Supabase)
 
-- `templates`: id, user_id, title, specialty, schema (jsonb), source_file_path, created_at, updated_at
-- `anamneses`: id, user_id, template_id, title, patient_label, answers (jsonb), created_at, updated_at
+- `profiles`: user_id (pk), full_name, institution, created_at, updated_at (criado por trigger no cadastro)
+- `specialties`: id, user_id, name (único por usuário, sem diferenciar maiúsculas), default_template_id, created_at, updated_at
+- `templates`: id, user_id, title, specialty_id, schema (jsonb), source_file_path, created_at, updated_at
+- `anamneses`: id, user_id, template_id, template_snapshot (jsonb), title, patient_label, answers (jsonb), created_at, updated_at
+- FKs entre tabelas são compostas `(id, user_id)`, então ninguém liga dados a registros de outra pessoa. Migrations ficam em `supabase/migrations/` (mesmas versões aplicadas pelo MCP); tipos em `src/lib/supabase/database.types.ts` (regenerar após cada migration).
 - Guardar um snapshot do schema do modelo na anamnese (ou versionar o modelo), para que editar o modelo depois não quebre anamneses antigas.
 - Toda alteração de banco via migrations.
 
@@ -134,3 +137,4 @@ Referência visual: `docs/referencia-design.jpeg`. Tema escuro (padrão) e claro
 
 - Após o deploy: em Supabase > Authentication > URL Configuration, configurar Site URL e Redirect URLs com o domínio da Vercel.
 - Conferir que o bucket está privado.
+- Antes do deploy: ligar **Confirm email** em Supabase > Authentication > Sign In / Providers > Email (está desligado durante o desenvolvimento) e testar o e-mail de confirmação de ponta a ponta. O app já funciona nos dois modos.

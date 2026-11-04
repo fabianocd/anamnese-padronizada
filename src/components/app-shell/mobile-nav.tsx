@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,7 +13,7 @@ import {
 import { SidebarContent } from "./sidebar-content";
 
 /** Botão de menu + gaveta lateral, só no celular/tablet. */
-export function MobileNav() {
+export function MobileNav({ footer }: { footer?: ReactNode }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -36,7 +36,7 @@ export function MobileNav() {
         <SheetDescription className="sr-only">
           Navegação principal do aplicativo
         </SheetDescription>
-        <SidebarContent onNavigate={() => setOpen(false)} />
+        <SidebarContent onNavigate={() => setOpen(false)} footer={footer} />
       </SheetContent>
     </Sheet>
   );
