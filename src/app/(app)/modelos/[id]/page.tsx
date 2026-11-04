@@ -14,6 +14,7 @@ export default function EditTemplatePage({ params }: PageProps<"/modelos/[id]">)
   return (
     <>
       <PageHeader
+        back={{ href: "/modelos", label: "Modelos" }}
         title="Editar modelo"
         description="Ajuste títulos, siglas, campos e tipos e reordene arrastando. Anamneses já preenchidas não mudam."
       />

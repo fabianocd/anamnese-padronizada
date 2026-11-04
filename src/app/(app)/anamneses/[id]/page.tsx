@@ -14,6 +14,7 @@ export default function AnamnesisPage({ params }: PageProps<"/anamneses/[id]">) 
   return (
     <>
       <PageHeader
+        back={{ href: "/historico", label: "Histórico" }}
         title="Anamnese"
         description="Preencha normalmente; tudo é salvo automaticamente. Em “Prévia” você vê como fica o PDF e copia o texto formatado."
       />

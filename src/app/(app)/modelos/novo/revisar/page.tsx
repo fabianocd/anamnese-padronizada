@@ -11,6 +11,7 @@ export default function ReviewTemplatePage() {
   return (
     <>
       <PageHeader
+        back={{ href: "/modelos/novo", label: "Novo modelo" }}
         title="Revisar modelo"
         description="Ajuste títulos, siglas, campos e tipos, reordene arrastando e salve o modelo na sua conta."
       />

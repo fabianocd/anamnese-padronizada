@@ -47,6 +47,7 @@ Marque `[x]` ao concluir cada fase. Detalhes de stack, segurança e formatação
 31. **Fonte do PDF**: Inter (OFL) em `public/fonts/` (subconjunto latino, cobre o português). Símbolos fora dele (≥, ≤, →...) são trocados por equivalentes (`>=`, `<=`, `->`). Cabeçalho do PDF com nome e instituição do perfil, quando preenchidos.
 32. **react-pdf 4.9**: `lineHeight` vai em cada texto junto com o `fontSize` (herdado da página some com o número da página; sem `fontSize` no mesmo estilo é calculado sobre 18). Títulos e campos ficam como irmãos diretos da página, para o `minPresenceAhead` levar título solto para a próxima página.
 33. **Repositório público** (portfólio). A ficha de exemplo (material da UNINTA) e o print de referência de design foram removidos de todo o histórico e ficam só na máquina local (`.gitignore`). Nunca commitar chaves, material de terceiros nem dados de pacientes.
+34. **Navegação**: sem barra do topo no desktop (o breadcrumb repetia o título e o "+ Nova Anamnese" repetia a sidebar); no celular fica uma barra com menu e marca. Páginas internas têm "← Voltar" acima do título apontando para a página de origem: anamnese → Histórico, editar/novo modelo → Modelos, revisão → Novo modelo.
 
 ## Para implementar no futuro
 

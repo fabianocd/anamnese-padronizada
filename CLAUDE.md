@@ -115,7 +115,7 @@ Manter um `.env.example` atualizado. Configurar as mesmas variáveis na Vercel.
 
 ## Design
 
-Referência visual: `docs/referencia-design.jpeg` (só local, fora do Git). Tema escuro (padrão) e claro marfim/bege, escolhidos em Configurações; cards translúcidos (glass) com bordas suaves, cantos arredondados, acento laranja nos botões principais e item ativo da sidebar. Sidebar com: Modelos, Nova Anamnese, Histórico, Configurações. Topo com breadcrumb e botão "+ Nova Anamnese". Responsivo (funcionar bem no celular). Interface em português.
+Referência visual: `docs/referencia-design.jpeg` (só local, fora do Git). Tema escuro (padrão) e claro marfim/bege, escolhidos em Configurações; cards translúcidos (glass) com bordas suaves, cantos arredondados, acento laranja nos botões principais e item ativo da sidebar. Sidebar com: Modelos, Nova Anamnese, Histórico, Configurações. Sem barra do topo no desktop (a sidebar já navega); no celular, barra fina com menu e marca. Páginas internas têm link "← Voltar" acima do título (`PageHeader` com `back`). Responsivo (funcionar bem no celular). Interface em português.
 
 ## Arquivos de referência
 
