@@ -6,7 +6,7 @@ Marque `[x]` ao concluir cada fase. Detalhes de stack, segurança e formatação
 
 - [x] **1. Setup e layout**: Next.js + TS strict + Tailwind + shadcn/ui; shell (sidebar, topo com breadcrumb e "+ Nova anamnese", menu lateral no celular); tema escuro glass com acento laranja e fundo em gradiente; rotas vazias; `.env.example`; repo GitHub `anamnese-padronizada` (privado); lint + typecheck.
 - [x] **2. Auth e banco com RLS**: `@supabase/ssr` + `src/proxy.ts`; login, cadastro (com confirmação por e-mail), recuperação de senha, logout; migrations (`templates`, `anamneses` com `template_snapshot`, `profiles`, `specialties`); RLS + policies em tudo; policies de storage por pasta `{user_id}/`; tipos gerados; Security Advisor sem alertas. Configurações já com perfil, especialidades (adicionar/remover), alterar senha e excluir conta. Isolamento entre contas testado (RLS, storage, FKs compostas).
-- [ ] **3. Extração com Gemini**: upload (1 PDF ou até 10 imagens, máx. 20 MB) para o bucket; route handler chama o Gemini com JSON schema; validação zod + normalização (ids, `#CONDUTA` no fim); erro amigável → criar manualmente; testar com `docs/anamnese-pediatrica-exemplo.pdf`.
+- [x] **3. Extração com Gemini**: upload (1 PDF ou até 10 imagens, máx. 20 MB) direto do navegador para `{user_id}/sources/{uploadId}/` no bucket; `POST /api/modelos/extrair` lê a pasta (RLS do usuário), revalida e chama o Gemini com JSON schema; validação zod + normalização (ids, caixa alta, siglas da lista, `#ID` em linha única, `#CONDUTA` no fim); erros amigáveis → "Tentar de novo" ou "Criar manualmente" (esqueleto ID/QP/HDA/CONDUTA); rascunho no sessionStorage e prévia em `/modelos/novo/revisar` (o editor da fase 4 entra nessa página). Testado com `docs/anamnese-pediatrica-exemplo.pdf` (21 seções, 100 campos, anexos ignorados).
 - [ ] **4. Editor de modelo**: título, especialidade, seções e campos (dnd-kit), tipos, opções, dicas, opção "linha única" por seção; prévia ao vivo; CRUD de modelos; marcar modelo padrão por especialidade.
 - [ ] **5. Preenchimento e histórico**: formulário gerado do snapshot; autosave; histórico com busca e filtro por modelo; abrir, editar, duplicar, excluir.
 - [ ] **6. Exportação em PDF**: formatador único (prévia + PDF), `@react-pdf/renderer`, botão "copiar texto".
@@ -32,8 +32,13 @@ Marque `[x]` ao concluir cada fase. Detalhes de stack, segurança e formatação
 16. **Links de e-mail** caem em `/auth/confirm`, que aceita `?code=` (template padrão do Supabase) e `?token_hash=&type=` (template customizado, que funciona mesmo abrindo o e-mail em outro navegador/celular).
 17. **Bucket** `anamneses-docs`: privado, limite de 20 MB, só PDF e imagens (JPEG, PNG, WebP, HEIC/HEIF).
 18. **Excluir conta**: apaga os arquivos do bucket e depois o usuário (o banco apaga o resto em cascata).
+19. **Modelos do Gemini**: principal `gemini-3.8-flash` (trocável por `GEMINI_MODEL`), reservas `gemini-3.5-flash` e `gemini-3.5-flash-lite` quando o anterior dá 503 ou estoura o tempo. Retries automáticos do SDK desligados; orçamento total de 105 s (rota com `maxDuration = 120`). Arquivos até 14 MB vão inline; acima disso pela Files API, apagados logo depois. No plano gratuito os 503 ("high demand") são frequentes e uma leitura leva ~35–65 s.
+20. **Rascunho do modelo**: fica no `sessionStorage` (só a aba atual) até ser salvo no editor; guarda `sourceFilePath` = pasta do envio, que vai para `templates.source_file_path`. Se a extração falha, a pasta do envio é apagada.
+21. **Schema**: seções ganharam `singleLine?: boolean` (decisão 1). Títulos, siglas e rótulos são guardados em caixa alta; opções e hints como vieram.
 
 ## Para implementar no futuro
 
 - **SMTP próprio** (ex.: Resend) no Supabase Auth: o SMTP embutido envia poucos e-mails por hora. Necessário antes de abrir o app para uma turma ou mais pessoas.
-- **Upgrade do Gemini** para plano pago, se o uso crescer.
+- **Upgrade do Gemini** para plano pago, se o uso crescer (resolve boa parte dos 503 e da demora).
+- **Limpeza de envios órfãos**: pastas `{user_id}/sources/...` de rascunhos abandonados (extraídos mas nunca salvos como modelo). Ex.: rotina que apaga pastas sem modelo com mais de 1 dia.
+- **Limite de extrações por usuário** (rate limit) se o app abrir para mais pessoas.

@@ -38,6 +38,7 @@ type Template = {
     id: string;
     title: string;        // ex.: "ALIMENTAÇÃO"
     abbreviation?: string; // ex.: "QP", "HDA"
+    singleLine?: boolean;  // respostas na mesma linha (padrão na #ID)
     fields: {
       id: string;
       label: string;      // ex.: "ALEITAMENTO MATERNO EXCLUSIVO"

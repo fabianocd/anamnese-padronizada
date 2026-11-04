@@ -35,6 +35,7 @@ const segmentLabels: Record<string, string> = {
   historico: "Histórico",
   configuracoes: "Configurações",
   editar: "Editar",
+  revisar: "Revisão",
 };
 
 export type Crumb = { label: string; href: string };

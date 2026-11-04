@@ -1,7 +1,8 @@
 import "server-only";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { DOCS_BUCKET } from "@/lib/uploads";
 
-export const DOCS_BUCKET = "anamneses-docs";
+export { DOCS_BUCKET };
 
 /** Lista recursivamente todos os arquivos dentro de uma pasta do bucket. */
 export async function listAllFiles(
