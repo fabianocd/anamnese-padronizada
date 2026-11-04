@@ -12,13 +12,13 @@ import { cn } from "@/lib/utils";
 import { createAnamnesis } from "../actions";
 import { StartButton } from "./start-button";
 
-export const metadata: Metadata = { title: "Nova anamnese" };
+export const metadata: Metadata = { title: "Nova Anamnese" };
 
 export default function NewAnamnesisPage() {
   return (
     <>
       <PageHeader
-        title="Nova anamnese"
+        title="Nova Anamnese"
         description="Escolha um dos seus modelos para começar. O preenchimento é salvo automaticamente."
       />
       <Suspense fallback={<ChooserSkeleton />}>

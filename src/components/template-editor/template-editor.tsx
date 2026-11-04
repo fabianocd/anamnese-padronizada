@@ -382,7 +382,7 @@ export function TemplateEditor({
         <p>
           Aqui você monta a <strong className="text-foreground">estrutura</strong> do modelo: os
           nomes dos campos (ex.: Iniciais, Idade), não as respostas. Os dados do paciente são
-          preenchidos depois, em <strong className="text-foreground">Nova anamnese</strong>.
+          preenchidos depois, em <strong className="text-foreground">Nova Anamnese</strong>.
           {isNew && origin === "ai"
             ? " A IA pode errar: confira se nenhum campo ficou de fora e se os tipos fazem sentido."
             : ""}

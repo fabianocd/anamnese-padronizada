@@ -86,7 +86,7 @@ async function HistoryContent({ filters }: { filters: Filters }) {
           <Button asChild size="lg" className="h-10 rounded-xl px-4">
             <Link href="/anamneses/nova">
               <Plus aria-hidden />
-              Nova anamnese
+              Nova Anamnese
             </Link>
           </Button>
         }

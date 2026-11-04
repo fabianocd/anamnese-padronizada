@@ -14,7 +14,7 @@ export type NavItem = {
 
 export const mainNav: NavItem[] = [
   { href: "/modelos", label: "Modelos", icon: LayoutTemplate },
-  { href: "/anamneses/nova", label: "Nova anamnese", icon: FilePlus2 },
+  { href: "/anamneses/nova", label: "Nova Anamnese", icon: FilePlus2 },
   { href: "/historico", label: "Histórico", icon: History },
 ];
 
@@ -31,7 +31,7 @@ const segmentLabels: Record<string, string> = {
   modelos: "Modelos",
   novo: "Novo modelo",
   anamneses: "Anamneses",
-  nova: "Nova anamnese",
+  nova: "Nova Anamnese",
   historico: "Histórico",
   configuracoes: "Configurações",
   editar: "Editar",

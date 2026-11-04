@@ -15,9 +15,9 @@ export function Topbar({ userMenu }: { userMenu?: ReactNode }) {
         </Suspense>
       </div>
       <Button asChild size="lg" className="h-10 rounded-xl px-4">
-        <Link href="/anamneses/nova" aria-label="Nova anamnese">
+        <Link href="/anamneses/nova" aria-label="Nova Anamnese">
           <Plus aria-hidden />
-          <span className="hidden sm:inline">Nova anamnese</span>
+          <span className="hidden sm:inline">Nova Anamnese</span>
         </Link>
       </Button>
     </header>

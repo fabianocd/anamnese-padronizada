@@ -17,7 +17,7 @@ App web para profissionais e estudantes de medicina padronizarem anamneses. A pe
 
 1. **Novo modelo**: upload de PDF/imagem → arquivo vai para o bucket do Supabase → rota de API envia ao Gemini → retorna JSON de seções/campos.
 2. **Revisão do modelo**: a pessoa edita títulos, adiciona/remove/reordena seções e campos, muda o tipo de campo e dá um título ao modelo (ex.: "Anamnese Pediátrica"). Salva na conta.
-3. **Nova anamnese**: escolhe um modelo salvo → formulário gerado a partir do schema → autosave.
+3. **Nova Anamnese**: escolhe um modelo salvo → formulário gerado a partir do schema → autosave.
 4. **Histórico**: lista de anamneses preenchidas, com busca e filtro por modelo; abrir, editar, duplicar, excluir.
 5. **Exportar**: PDF formatado seguindo o padrão abaixo.
 
@@ -115,7 +115,7 @@ Manter um `.env.example` atualizado. Configurar as mesmas variáveis na Vercel.
 
 ## Design
 
-Referência visual: `docs/referencia-design.jpeg` (só local, fora do Git). Tema escuro (padrão) e claro marfim/bege, escolhidos em Configurações; cards translúcidos (glass) com bordas suaves, cantos arredondados, acento laranja nos botões principais e item ativo da sidebar. Sidebar com: Modelos, Nova anamnese, Histórico, Configurações. Topo com breadcrumb e botão "+ Nova anamnese". Responsivo (funcionar bem no celular). Interface em português.
+Referência visual: `docs/referencia-design.jpeg` (só local, fora do Git). Tema escuro (padrão) e claro marfim/bege, escolhidos em Configurações; cards translúcidos (glass) com bordas suaves, cantos arredondados, acento laranja nos botões principais e item ativo da sidebar. Sidebar com: Modelos, Nova Anamnese, Histórico, Configurações. Topo com breadcrumb e botão "+ Nova Anamnese". Responsivo (funcionar bem no celular). Interface em português.
 
 ## Arquivos de referência
 
@@ -133,6 +133,7 @@ Referência visual: `docs/referencia-design.jpeg` (só local, fora do Git). Tema
 - Componentes de servidor por padrão; client só quando precisar de interatividade.
 - Server Actions ou route handlers para mutações; validar entrada com zod.
 - Código e nomes de variáveis em inglês; textos da interface em português.
+- Nome da página "Nova Anamnese" com as duas iniciais maiúsculas em toda a interface (menu, botão do topo, breadcrumb, título).
 - Rodar lint e typecheck antes de considerar uma etapa concluída.
 
 ## Produção
