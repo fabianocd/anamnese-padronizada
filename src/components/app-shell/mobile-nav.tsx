@@ -30,7 +30,7 @@ export function MobileNav() {
       </SheetTrigger>
       <SheetContent
         side="left"
-        className="glass-strong w-72 border-r-0 bg-transparent p-0"
+        className="glass-strong w-72 border-r-0 bg-popover/90 p-0"
       >
         <SheetTitle className="sr-only">Menu</SheetTitle>
         <SheetDescription className="sr-only">

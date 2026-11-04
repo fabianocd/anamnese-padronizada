@@ -111,7 +111,7 @@ Manter um `.env.example` atualizado. Configurar as mesmas variáveis na Vercel.
 
 ## Design
 
-Referência visual: `docs/referencia-design.jpeg`. Tema escuro, cards translúcidos (glass) com bordas suaves, cantos arredondados, acento laranja nos botões principais e item ativo da sidebar. Sidebar com: Modelos, Nova anamnese, Histórico, Configurações. Topo com breadcrumb e botão "+ Nova anamnese". Responsivo (funcionar bem no celular). Interface em português.
+Referência visual: `docs/referencia-design.jpeg`. Tema escuro (padrão) e claro marfim/bege, escolhidos em Configurações; cards translúcidos (glass) com bordas suaves, cantos arredondados, acento laranja nos botões principais e item ativo da sidebar. Sidebar com: Modelos, Nova anamnese, Histórico, Configurações. Topo com breadcrumb e botão "+ Nova anamnese". Responsivo (funcionar bem no celular). Interface em português.
 
 ## Arquivos de referência
 
@@ -123,6 +123,7 @@ Referência visual: `docs/referencia-design.jpeg`. Tema escuro, cards translúci
 
 - **Next.js 16** com `cacheComponents` e `partialPrefetching` ligados: ler `AGENTS.md` e a doc em `node_modules/next/dist/docs/` antes de usar APIs do Next. Leituras de cookies/sessão e `usePathname` ficam dentro de `<Suspense>`. Middleware agora é `proxy.ts`. Não passar componentes/funções (ex.: ícones) de Server para Client Components.
 - `npm run typecheck` (gera os tipos de rota e roda `tsc`) e `npm run lint`.
+- Dev local na porta **3010** (`npm run dev` → http://localhost:3010). As portas 3000 (Grafana) e 3001 estão ocupadas nesta máquina. Nas Redirect URLs do Supabase, usar `http://localhost:3010/**`.
 
 - Componentes de servidor por padrão; client só quando precisar de interatividade.
 - Server Actions ou route handlers para mutações; validar entrada com zod.

@@ -24,7 +24,7 @@ Marque `[x]` ao concluir cada fase. Detalhes de stack, segurança e formatação
 8. **Arquivo original** guardado no bucket e ligado ao modelo.
 9. **Configurações**: perfil (nome e instituição, que podem ir no cabeçalho do PDF), alterar senha, excluir conta com todos os dados (usa `SUPABASE_SECRET_KEY`, só no servidor).
 10. **Cadastro** com confirmação por e-mail.
-11. **Tema**: só escuro, com fundo em gradiente quente no lugar da foto da referência.
+11. **Tema**: escuro (padrão, gradiente quente no lugar da foto da referência) e claro (fundo marfim/bege). A troca fica em Configurações > Aparência (Claro / Escuro / Sistema), salva no navegador (localStorage) e aplicada por script inline antes da pintura (`src/lib/theme.ts`).
 12. **Especialidades**: lista editável pela pessoa, sem modelos pré-definidos. A pessoa marca o próprio modelo padrão por especialidade (ex.: "Anamnese Pediátrica" para Pediatria), salvo na conta, e "Nova anamnese" já o sugere.
 13. **Git**: repo privado `anamnese-padronizada` no GitHub (`fabianocd`). A Vercel já tem acesso ao GitHub. Push na `main` faz deploy automático. Push só quando o usuário pedir.
 14. **Gemini**: chave do plano gratuito; usar o modelo Flash mais recente. Limites baixos → mensagem amigável quando a cota estourar. No plano gratuito o Google pode usar o conteúdo para treino, o que é aceitável porque só a ficha em branco é enviada.
@@ -32,5 +32,4 @@ Marque `[x]` ao concluir cada fase. Detalhes de stack, segurança e formatação
 ## Para implementar no futuro
 
 - **SMTP próprio** (ex.: Resend) no Supabase Auth: o SMTP embutido envia poucos e-mails por hora. Necessário antes de abrir o app para uma turma ou mais pessoas.
-- **Tema claro** (a referência tem botão de tema; por ora só escuro).
 - **Upgrade do Gemini** para plano pago, se o uso crescer.
