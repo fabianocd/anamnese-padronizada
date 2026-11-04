@@ -329,7 +329,7 @@ export function AnamnesisForm({
         ))}
       </ol>
 
-      <div className="glass-strong sticky bottom-3 z-30 flex flex-col gap-3 rounded-2xl p-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="glass-bar sticky bottom-3 z-30 flex flex-col gap-3 rounded-2xl p-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1 px-1 text-sm">
           <SaveIndicator
             status={status}

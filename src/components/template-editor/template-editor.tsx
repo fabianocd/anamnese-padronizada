@@ -521,7 +521,7 @@ export function TemplateEditor({
         </aside>
       </div>
 
-      <div className="glass-strong sticky bottom-3 z-30 flex flex-col gap-3 rounded-2xl p-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="glass-bar sticky bottom-3 z-30 flex flex-col gap-3 rounded-2xl p-3 sm:flex-row sm:items-center sm:justify-between">
         <p className="px-1 text-sm text-muted-foreground" aria-live="polite">
           {isNew
             ? "Rascunho ainda não salvo na conta."
