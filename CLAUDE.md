@@ -134,8 +134,9 @@ Referência visual: `docs/referencia-design.jpeg`. Tema escuro (padrão) e claro
 - Código e nomes de variáveis em inglês; textos da interface em português.
 - Rodar lint e typecheck antes de considerar uma etapa concluída.
 
-## Lembretes manuais (avisar o usuário quando chegar a hora)
+## Produção
 
-- Após o deploy: em Supabase > Authentication > URL Configuration, configurar Site URL e Redirect URLs com o domínio da Vercel.
-- Conferir que o bucket está privado.
-- Antes do deploy: ligar **Confirm email** em Supabase > Authentication > Sign In / Providers > Email (está desligado durante o desenvolvimento) e testar o e-mail de confirmação de ponta a ponta. O app já funciona nos dois modos.
+- App em https://anamnese-padronizada.vercel.app (projeto Vercel `anamnese-padronizada`, funções em `iad1`). Push na `main` publica sozinho.
+- No Supabase: Site URL = domínio da Vercel; Redirect URLs com o domínio da Vercel e `http://localhost:3010/**`; **Confirm email** ligado.
+- Se o domínio mudar (ex.: domínio próprio), atualizar Site URL e Redirect URLs no Supabase.
+- Nova variável de ambiente: adicionar no `.env.local`, no `.env.example` e na Vercel.
