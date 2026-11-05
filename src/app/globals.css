@@ -89,6 +89,10 @@
   --sidebar-border: oklch(0.45 0.08 10 / 12%);
   --sidebar-ring: oklch(0.732 0.155 356 / 60%);
 
+  /* Logo (degradê do símbolo e do nome) */
+  --logo-from: oklch(0.72 0.15 356);
+  --logo-to: oklch(0.56 0.17 12);
+
   /* Superfícies translúcidas (glass) */
   --glass: oklch(1 0 0 / 52%);
   --glass-strong: oklch(0.99 0.008 30 / 80%);
@@ -140,6 +144,9 @@
   --sidebar-accent-foreground: oklch(0.96 0.008 15);
   --sidebar-border: oklch(1 0 0 / 8%);
   --sidebar-ring: oklch(0.6 0.15 17 / 70%);
+
+  --logo-from: oklch(0.82 0.09 20);
+  --logo-to: oklch(0.6 0.16 15);
 
   --glass: oklch(0.3 0.025 15 / 38%);
   --glass-strong: oklch(0.26 0.025 15 / 62%);

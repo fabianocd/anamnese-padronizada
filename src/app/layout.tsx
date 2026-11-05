@@ -22,8 +22,8 @@ const outfit = Outfit({
 
 export const metadata: Metadata = {
   title: {
-    default: "Anamnese Padronizada",
-    template: "%s · Anamnese Padronizada",
+    default: "Prontus",
+    template: "%s · Prontus",
   },
   description:
     "Transforme fichas de anamnese em modelos padronizados, preencha e exporte em PDF.",

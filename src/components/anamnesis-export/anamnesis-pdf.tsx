@@ -128,8 +128,8 @@ export function anamnesisPdfDocument(
     <Document
       title={safe(footerLeft || header.title)}
       author={safe(header.author) || undefined}
-      creator="Anamnese Padronizada"
-      producer="Anamnese Padronizada"
+      creator="Prontus"
+      producer="Prontus"
       language="pt-BR"
     >
       <Page size="A4" style={styles.page}>

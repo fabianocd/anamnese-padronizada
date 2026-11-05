@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-52 -7 640 640">
+  <style>
+    .a { stop-color: oklch(0.72 0.15 356); }
+    .b { stop-color: oklch(0.56 0.17 12); }
+    @media (prefers-color-scheme: dark) {
+      .a { stop-color: oklch(0.82 0.09 20); }
+      .b { stop-color: oklch(0.6 0.16 15); }
+    }
+  </style>
+  <defs>
+    <linearGradient id="g" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="536" y2="627">
+      <stop offset="0.25" class="a"/>
+      <stop offset="1" class="b"/>
+    </linearGradient>
+    <mask id="k" maskUnits="userSpaceOnUse">
+      <rect x="-52" y="-7" width="640" height="640" fill="white"/>
+      <path d="M182 240L264 333L514 67" stroke="black" stroke-width="85" fill="none"/>
+      <path d="M190 230L264 333L350 240Z" fill="black"/>
+    </mask>
+    <clipPath id="c">
+      <rect x="79" y="0" width="233" height="460"/>
+      <circle cx="312" cy="227" r="152"/>
+    </clipPath>
+  </defs>
+  <g stroke="url(#g)" stroke-width="44" fill="none">
+    <g mask="url(#k)">
+      <path d="M18 18H312A209 209 0 0 1 312 436H205V608H18Z"/>
+      <g clip-path="url(#c)">
+        <path d="M79 100H480M79 185H480M79 270H480M79 354H480"/>
+      </g>
+      <path d="M79 437H205M79 525H205"/>
+    </g>
+    <path d="M182 240L264 333L514 67"/>
+  </g>
+</svg>
