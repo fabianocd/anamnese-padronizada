@@ -1,6 +1,6 @@
-# Anamnese Padronizada
+# Prontus
 
-App web para profissionais e estudantes de medicina padronizarem anamneses.
+Anamnese padronizada: app web para profissionais e estudantes de medicina padronizarem anamneses.
 
 Envie a ficha de anamnese que você já usa (PDF ou fotos), a IA monta um **modelo** com as seções e os campos, você revisa e, a partir dele, preenche **anamneses** e exporta um PDF no formato padrão.
 

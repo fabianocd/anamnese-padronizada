@@ -1,6 +1,6 @@
-# Anamnese Padronizada
+# Prontus
 
-App web para profissionais e estudantes de medicina padronizarem anamneses. A pessoa envia um PDF (ou imagem) de uma ficha de anamnese, a IA extrai as seções e campos, a pessoa revisa e edita a estrutura, salva como **modelo** na conta, preenche **anamneses** a partir dele e exporta um PDF formatado.
+Nome do app: **Prontus** (subtítulo "Anamnese padronizada"). App web para profissionais e estudantes de medicina padronizarem anamneses. A pessoa envia um PDF (ou imagem) de uma ficha de anamnese, a IA extrai as seções e campos, a pessoa revisa e edita a estrutura, salva como **modelo** na conta, preenche **anamneses** a partir dele e exporta um PDF formatado.
 
 ## Stack
 
@@ -115,7 +115,9 @@ Manter um `.env.example` atualizado. Configurar as mesmas variáveis na Vercel.
 
 ## Design
 
-Referência visual: `docs/referencia-design.jpeg` (só local, fora do Git). Tema escuro (padrão) e claro marfim/bege, escolhidos em Configurações; cards translúcidos (glass) com bordas suaves, cantos arredondados, acento laranja nos botões principais e item ativo da sidebar. Sidebar com: Modelos, Nova Anamnese, Histórico, Configurações. Sem barra do topo no desktop (a sidebar já navega); no celular, barra fina com menu e marca. Páginas internas têm link "← Voltar" acima do título (`PageHeader` com `back`). Responsivo (funcionar bem no celular). Interface em português.
+Referência visual: `docs/referencia-design.jpeg` (só local, fora do Git). Tema escuro vinho (padrão) e claro rosa, escolhidos em Configurações; cards translúcidos (glass) com bordas suaves, cantos arredondados, acento da primária nos botões principais e item ativo da sidebar.
+
+Marca: símbolo em SVG ("P" em contorno com linhas de ficha e um check) em `src/components/app-shell/prontus-mark.tsx`, usado pelo `Brand` (sidebar, barra do celular, login). O degradê do símbolo e do nome usa `--logo-from`/`--logo-to` em `globals.css`, definidos por tema. O ícone da aba é `src/app/icon.svg` (segue o tema do sistema, com as mesmas cores). Nos nomes de projeto (Vercel, GitHub, domínio, `package.json`) continua `anamnese-padronizada`. Sidebar com: Modelos, Nova Anamnese, Histórico, Configurações. Sem barra do topo no desktop (a sidebar já navega); no celular, barra fina com menu e marca. Páginas internas têm link "← Voltar" acima do título (`PageHeader` com `back`). Responsivo (funcionar bem no celular). Interface em português.
 
 ## Arquivos de referência
 
