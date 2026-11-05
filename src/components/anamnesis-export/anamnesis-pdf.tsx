@@ -45,7 +45,7 @@ function safe(value: string): string {
   return value.replace(REPLACEMENT_PATTERN, (char) => REPLACEMENTS[char] ?? char);
 }
 
-const ACCENT = "#d9661f";
+const ACCENT = "#7c1b2a";
 const TEXT = "#1c1917";
 const MUTED = "#6b625a";
 const RULE = "#e7ded3";

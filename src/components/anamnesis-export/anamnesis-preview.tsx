@@ -10,7 +10,7 @@ export function AnamnesisPreview({ document }: { document: AnamnesisExport }) {
 
   return (
     <article className="rounded-xl bg-[#fffdf9] px-5 py-6 font-sans text-[0.8125rem] leading-relaxed text-stone-900 shadow-sm ring-1 ring-black/5 break-words sm:px-8 sm:py-8">
-      <header className="mb-4 flex flex-wrap items-end justify-between gap-x-4 gap-y-1 border-b-2 border-[#d9661f] pb-2.5">
+      <header className="mb-4 flex flex-wrap items-end justify-between gap-x-4 gap-y-1 border-b-2 border-[#7c1b2a] pb-2.5">
         <div className="min-w-0">
           <h3 className="text-base font-bold tracking-tight">{header.title}</h3>
           <p className="mt-0.5 text-xs text-stone-500">
