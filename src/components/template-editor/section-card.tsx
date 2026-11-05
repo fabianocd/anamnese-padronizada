@@ -28,7 +28,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { UpperCaseInput } from "@/components/ui/upper-case-input";
 import { Switch } from "@/components/ui/switch";
 import { sectionHeading } from "@/lib/templates/format";
 import { LIMITS, newId, type EditableSection } from "@/lib/templates/schema";
@@ -138,14 +138,10 @@ export const SectionCard = memo(function SectionCard({
 
         <div className="flex min-w-0 flex-1 flex-col gap-2 sm:flex-row sm:items-start">
           <div className="flex min-w-0 flex-1 gap-2">
-            <Input
+            <UpperCaseInput
               value={section.abbreviation ?? ""}
-              onChange={(event) =>
-                dispatch({
-                  type: "updateSection",
-                  sectionId: section.id,
-                  patch: { abbreviation: event.target.value },
-                })
+              onValueChange={(abbreviation) =>
+                dispatch({ type: "updateSection", sectionId: section.id, patch: { abbreviation } })
               }
               placeholder="Sigla"
               aria-label={`Sigla da seção ${name}`}
@@ -154,14 +150,10 @@ export const SectionCard = memo(function SectionCard({
               className="h-10 w-20 shrink-0 rounded-lg font-semibold uppercase placeholder:font-normal placeholder:normal-case sm:w-24"
             />
             <div className="min-w-0 flex-1">
-              <Input
+              <UpperCaseInput
                 value={section.title}
-                onChange={(event) =>
-                  dispatch({
-                    type: "updateSection",
-                    sectionId: section.id,
-                    patch: { title: event.target.value },
-                  })
+                onValueChange={(title) =>
+                  dispatch({ type: "updateSection", sectionId: section.id, patch: { title } })
                 }
                 placeholder="Título da seção (ex.: Alimentação)"
                 aria-label={`Título da seção ${index + 1}`}

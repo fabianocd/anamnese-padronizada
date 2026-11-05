@@ -51,7 +51,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
+import { UpperCaseInput } from "@/components/ui/upper-case-input";
 import { Label } from "@/components/ui/label";
 import {
   ANSWER_LIMITS,
@@ -272,25 +272,25 @@ export function AnamnesisForm({
         <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,16rem)]">
           <div className="flex flex-col gap-2">
             <Label htmlFor={titleId}>Título</Label>
-            <Input
+            <UpperCaseInput
               id={titleId}
               value={title}
-              onChange={(event) => {
-                setTitle(event.target.value);
+              onValueChange={(next) => {
+                setTitle(next);
                 markChanged();
               }}
               maxLength={ANSWER_LIMITS.title}
               aria-invalid={(status === "invalid" && !title.trim()) || undefined}
-              className="h-11 rounded-xl px-3 font-heading text-lg font-semibold md:text-lg"
+              className="h-11 rounded-xl px-3 font-heading text-lg font-semibold uppercase md:text-lg"
             />
           </div>
           <div className="flex flex-col gap-2">
             <Label htmlFor={patientId}>Paciente (iniciais ou código)</Label>
-            <Input
+            <UpperCaseInput
               id={patientId}
               value={patientLabel}
-              onChange={(event) => {
-                setPatientLabel(event.target.value);
+              onValueChange={(next) => {
+                setPatientLabel(next);
                 markChanged();
               }}
               placeholder="Ex.: M.S. ou leito 4"

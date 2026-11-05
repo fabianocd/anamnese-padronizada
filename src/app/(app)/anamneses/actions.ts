@@ -104,7 +104,7 @@ export async function duplicateAnamnesis(id: string): Promise<DuplicateAnamnesis
     .maybeSingle();
   if (!original) return { ok: false, message: "Não foi possível duplicar a anamnese." };
 
-  const suffix = " (cópia)";
+  const suffix = " (CÓPIA)";
   const { data, error } = await supabase
     .from("anamneses")
     .insert({

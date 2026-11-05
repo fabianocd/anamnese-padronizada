@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { toUpper } from "@/lib/upper-case";
 import type { EditableTemplate, FieldType } from "@/lib/templates/schema";
 
 /**
@@ -35,14 +36,16 @@ export const anamnesisMetaSchema = z.object({
     .string()
     .trim()
     .min(1, "Dê um título à anamnese.")
-    .max(ANSWER_LIMITS.title, `Título muito longo (máx. ${ANSWER_LIMITS.title} caracteres).`),
+    .max(ANSWER_LIMITS.title, `Título muito longo (máx. ${ANSWER_LIMITS.title} caracteres).`)
+    .transform(toUpper),
   patientLabel: z
     .string()
     .trim()
     .max(
       ANSWER_LIMITS.patientLabel,
       `Use só iniciais ou um código (máx. ${ANSWER_LIMITS.patientLabel} caracteres).`,
-    ),
+    )
+    .transform(toUpper),
 });
 
 export const saveAnamnesisInputSchema = anamnesisMetaSchema.extend({

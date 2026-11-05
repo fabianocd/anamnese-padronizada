@@ -122,7 +122,7 @@ export async function duplicateTemplate(id: string): Promise<ActionResult> {
     .maybeSingle();
   if (error || !original) return { ok: false, message: "Não foi possível duplicar o modelo." };
 
-  const suffix = " (cópia)";
+  const suffix = " (CÓPIA)";
   const title = `${original.title.slice(0, LIMITS.templateTitle - suffix.length).trim()}${suffix}`;
   // A cópia não aponta para o arquivo original (que some se o original for excluído).
   const { error: insertError } = await supabase.from("templates").insert({

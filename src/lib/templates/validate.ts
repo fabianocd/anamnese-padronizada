@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { toUpper } from "@/lib/upper-case";
 import { prepareTemplateForSave } from "./normalize";
 import {
   editableTemplateSchema,
@@ -15,7 +16,8 @@ export const saveTemplateInputSchema = z.object({
     .string()
     .trim()
     .min(1, "Dê um título ao modelo.")
-    .max(LIMITS.templateTitle, `Título muito longo (máx. ${LIMITS.templateTitle} caracteres).`),
+    .max(LIMITS.templateTitle, `Título muito longo (máx. ${LIMITS.templateTitle} caracteres).`)
+    .transform(toUpper),
   specialtyId: z.uuid().nullable(),
   isDefault: z.boolean(),
   schema: editableTemplateSchema,

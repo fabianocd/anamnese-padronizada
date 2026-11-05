@@ -54,7 +54,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { UpperCaseInput } from "@/components/ui/upper-case-input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { isCondutaSection } from "@/lib/templates/normalize";
@@ -305,10 +305,10 @@ export function TemplateEditor({
 
         <div className="flex flex-col gap-2">
           <Label htmlFor={titleId}>Título do modelo</Label>
-          <Input
+          <UpperCaseInput
             id={titleId}
             value={state.title}
-            onChange={(event) => dispatch({ type: "setTitle", title: event.target.value })}
+            onValueChange={(title) => dispatch({ type: "setTitle", title })}
             placeholder="Ex.: Anamnese Pediátrica"
             maxLength={LIMITS.templateTitle}
             aria-invalid={Boolean(issues.title) || undefined}

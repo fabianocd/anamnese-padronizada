@@ -103,14 +103,14 @@ function normalizeField(raw: AiExtraction["sections"][number]["fields"][number])
   if (!label) return null;
 
   const options = [
-    ...new Set(raw.options.map((option) => clip(option.replace(/\s+/g, " ").trim(), LIMITS.option))),
+    ...new Set(raw.options.map((option) => clip(upper(option.replace(/\s+/g, " ").trim()), LIMITS.option))),
   ]
     .filter(Boolean)
     .slice(0, LIMITS.options);
 
   // "select" sem opções não tem como ser preenchido: vira texto curto.
   const type = raw.type === "select" && options.length === 0 ? "short_text" : raw.type;
-  const hint = clip(raw.hint.replace(/\s+/g, " ").trim(), LIMITS.hint);
+  const hint = clip(upper(raw.hint.replace(/\s+/g, " ").trim()), LIMITS.hint);
 
   return {
     id: newId(),
@@ -172,8 +172,8 @@ export function normalizeTemplate(raw: AiExtraction): Template {
   return { sections: limited };
 }
 
-export function normalizeTitle(raw: string, fallback = "Novo modelo"): string {
-  const title = clip(raw.replace(/\s+/g, " ").trim(), LIMITS.templateTitle);
+export function normalizeTitle(raw: string, fallback = "NOVO MODELO"): string {
+  const title = clip(upper(raw.replace(/\s+/g, " ").trim()), LIMITS.templateTitle);
   return title || fallback;
 }
 
@@ -220,10 +220,10 @@ function collapse(value: string): string {
 }
 
 function prepareField(field: EditableField): EditableField {
-  const hint = collapse(field.hint ?? "");
+  const hint = upper(collapse(field.hint ?? ""));
   const options =
     field.type === "select"
-      ? [...new Set((field.options ?? []).map(collapse).filter(Boolean))]
+      ? [...new Set((field.options ?? []).map((option) => upper(collapse(option))).filter(Boolean))]
       : undefined;
   return {
     id: field.id,
@@ -252,7 +252,7 @@ function prepareSection(section: EditableSection): EditableSection {
 
 /**
  * Arruma o modelo editado antes de validar e salvar: espaços, caixa alta em
- * títulos/siglas/rótulos, opções só em "select" (sem vazias nem repetidas) e
+ * títulos/siglas/rótulos/dicas/opções, opções só em "select" (sem vazias nem repetidas) e
  * uma única `#CONDUTA:` no fim. Não inventa conteúdo: o que continuar
  * inválido (ex.: rótulo vazio) é apontado pela validação estrita.
  */

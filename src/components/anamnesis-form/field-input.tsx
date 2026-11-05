@@ -4,6 +4,7 @@ import { memo, useId } from "react";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { UpperCaseInput, UpperCaseTextarea } from "@/components/ui/upper-case-input";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -12,7 +13,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { ANSWER_LIMITS, type AnswerValue, type YesNoAnswer } from "@/lib/anamneses/answers";
 import type { EditableField } from "@/lib/templates/schema";
 import { cn } from "@/lib/utils";
@@ -96,9 +96,9 @@ export const FieldInput = memo(function FieldInput({ field, value, onChange }: F
               );
             })}
           </div>
-          <Input
+          <UpperCaseInput
             value={answer.note}
-            onChange={(event) => set({ ...answer, note: event.target.value })}
+            onValueChange={(note) => set({ ...answer, note })}
             placeholder="Observação (opcional)"
             aria-label={`Observação de ${field.label}`}
             maxLength={ANSWER_LIMITS.note}
@@ -113,10 +113,10 @@ export const FieldInput = memo(function FieldInput({ field, value, onChange }: F
   switch (field.type) {
     case "long_text":
       control = (
-        <Textarea
+        <UpperCaseTextarea
           id={id}
           value={text}
-          onChange={(event) => set(event.target.value)}
+          onValueChange={set}
           aria-describedby={describedBy}
           maxLength={ANSWER_LIMITS.longText}
           rows={3}
@@ -187,10 +187,10 @@ export const FieldInput = memo(function FieldInput({ field, value, onChange }: F
       break;
     default:
       control = (
-        <Input
+        <UpperCaseInput
           id={id}
           value={text}
-          onChange={(event) => set(event.target.value)}
+          onValueChange={set}
           aria-describedby={describedBy}
           maxLength={ANSWER_LIMITS.shortText}
           autoComplete="off"

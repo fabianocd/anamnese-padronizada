@@ -5,7 +5,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { GripVertical, Lightbulb, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { UpperCaseInput } from "@/components/ui/upper-case-input";
 import {
   Select,
   SelectContent,
@@ -82,15 +82,15 @@ export const FieldRow = memo(function FieldRow({
       <div className="flex min-w-0 flex-1 flex-col gap-2">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-start">
           <div className="min-w-0 flex-1">
-            <Input
+            <UpperCaseInput
               value={field.label}
-              onChange={(event) => update({ label: event.target.value })}
+              onValueChange={(label) => update({ label })}
               placeholder="Nome do campo (ex.: Idade)"
               aria-label={`Nome do campo ${index + 1}`}
               aria-invalid={Boolean(issues?.label) || undefined}
               maxLength={LIMITS.label}
               autoFocus={autoFocus}
-              className="h-9 rounded-lg uppercase placeholder:normal-case"
+              className="h-9 rounded-lg"
             />
             {issues?.label ? (
               <p className="mt-1 text-xs font-medium text-destructive">{issues.label}</p>
@@ -144,9 +144,9 @@ export const FieldRow = memo(function FieldRow({
 
         {hintVisible ? (
           <div>
-            <Input
+            <UpperCaseInput
               value={field.hint ?? ""}
-              onChange={(event) => update({ hint: event.target.value })}
+              onValueChange={(hint) => update({ hint })}
               placeholder="Dica para quem preenche (ex.: Escala de Bristol). Não sai no PDF."
               aria-label={`Dica de ${labelName}`}
               aria-invalid={Boolean(issues?.hint) || undefined}

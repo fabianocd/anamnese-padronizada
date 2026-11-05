@@ -3,8 +3,9 @@
 import { useState, type KeyboardEvent } from "react";
 import { Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { UpperCaseInput } from "@/components/ui/upper-case-input";
 import { LIMITS } from "@/lib/templates/schema";
+import { toUpper } from "@/lib/upper-case";
 
 type OptionsEditorProps = {
   options: string[];
@@ -20,7 +21,7 @@ export function OptionsEditor({ options, onChange, fieldName, error }: OptionsEd
 
   function add() {
     // Aceita várias de uma vez, separadas por ";" (ex.: colar "Leve; Moderada; Grave").
-    const incoming = value
+    const incoming = toUpper(value)
       .split(";")
       .map((item) => item.replace(/\s+/g, " ").trim().slice(0, LIMITS.option).trim())
       .filter(Boolean);
@@ -47,7 +48,7 @@ export function OptionsEditor({ options, onChange, fieldName, error }: OptionsEd
           {options.map((option, index) => (
             <li
               key={`${option}-${index}`}
-              className="flex items-center gap-0.5 rounded-full border border-border bg-background/50 py-0.5 pr-0.5 pl-2.5 text-xs"
+              className="flex items-center gap-0.5 rounded-full border border-border bg-background/50 py-0.5 pr-0.5 pl-2.5 text-xs uppercase"
             >
               {option}
               <Button
@@ -65,9 +66,9 @@ export function OptionsEditor({ options, onChange, fieldName, error }: OptionsEd
         </ul>
       ) : null}
       <div className="flex gap-1.5">
-        <Input
+        <UpperCaseInput
           value={value}
-          onChange={(event) => setValue(event.target.value)}
+          onValueChange={setValue}
           onKeyDown={onKeyDown}
           placeholder={full ? "Limite de opções atingido" : "Nova opção (Enter para adicionar)"}
           aria-label={`Nova opção de ${fieldName}`}
