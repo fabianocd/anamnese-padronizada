@@ -2,6 +2,7 @@ import {
   FilePlus2,
   History,
   LayoutTemplate,
+  NotebookPen,
   Settings,
   type LucideIcon,
 } from "lucide-react";
@@ -16,6 +17,7 @@ export const mainNav: NavItem[] = [
   { href: "/modelos", label: "Modelos", icon: LayoutTemplate },
   { href: "/anamneses/nova", label: "Nova Anamnese", icon: FilePlus2 },
   { href: "/historico", label: "Histórico", icon: History },
+  { href: "/notas", label: "Bloco de Notas", icon: NotebookPen },
 ];
 
 export const secondaryNav: NavItem[] = [

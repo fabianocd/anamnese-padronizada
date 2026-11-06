@@ -48,6 +48,7 @@ Marque `[x]` ao concluir cada fase. Detalhes de stack, segurança e formatação
 32. **react-pdf 4.9**: `lineHeight` vai em cada texto junto com o `fontSize` (herdado da página some com o número da página; sem `fontSize` no mesmo estilo é calculado sobre 18). Títulos e campos ficam como irmãos diretos da página, para o `minPresenceAhead` levar título solto para a próxima página.
 33. **Repositório público** (portfólio). A ficha de exemplo (material da UNINTA) e o print de referência de design foram removidos de todo o histórico e ficam só na máquina local (`.gitignore`). Nunca commitar chaves, material de terceiros nem dados de pacientes.
 34. **Navegação**: sem barra do topo no desktop (o breadcrumb repetia o título e o "+ Nova Anamnese" repetia a sidebar); no celular fica uma barra com menu e marca. Páginas internas têm "← Voltar" acima do título apontando para a página de origem: anamnese → Histórico, editar/novo modelo → Modelos, revisão → Novo modelo.
+35. **Bloco de Notas** (`/notas`, item na sidebar depois de Histórico): notas livres com título e texto (tabela `notes`, RLS por dono, até 160/100.000 caracteres), sem ligação com modelos nem anamneses. Escritas em caixa normal (não seguem a regra da caixa alta, que é da anamnese). "Nova nota" cria o registro em branco e abre o editor; salvamento automático igual ao da anamnese; lista em cards (mais recentes primeiro) com abrir e excluir. Título vazio aparece como "Sem título".
 
 ## Para implementar no futuro
 

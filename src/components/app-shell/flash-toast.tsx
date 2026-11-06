@@ -10,11 +10,13 @@ const messages: Record<string, string> = {
   "modelo-criado": "Modelo salvo na sua conta.",
   "modelo-excluido": "Modelo excluído.",
   "anamnese-excluida": "Anamnese excluída.",
+  "nota-excluida": "Nota excluída.",
 };
 
 const errors: Record<string, string> = {
   "modelo-indisponivel": "Esse modelo não está mais disponível. Escolha outro.",
   "erro-ao-criar": "Não foi possível criar a anamnese. Tente de novo.",
+  "erro-ao-criar-nota": "Não foi possível criar a nota. Tente de novo.",
 };
 
 /** Mostra um toast para `?aviso=...` e limpa o parâmetro da URL. */
