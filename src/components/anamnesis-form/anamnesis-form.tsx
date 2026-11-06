@@ -23,6 +23,8 @@ import {
   FileDown,
   History,
   LoaderCircle,
+  PencilRuler,
+  RefreshCw,
   Save,
   ShieldAlert,
   Trash2,
@@ -30,8 +32,10 @@ import {
 import { toast } from "sonner";
 import {
   deleteAnamnesis,
+  discardBlankAnamnesis,
   duplicateAnamnesis,
   saveAnamnesis,
+  syncAnamnesisWithTemplate,
 } from "@/app/(app)/anamneses/actions";
 import {
   AlertDialog,
@@ -61,6 +65,7 @@ import {
   type Answers,
   type AnswerValue,
 } from "@/lib/anamneses/answers";
+import type { TemplateUpdate } from "@/lib/anamneses/sync";
 import { sectionHeading } from "@/lib/templates/format";
 import type { EditableSection, EditableTemplate } from "@/lib/templates/schema";
 import { ExportSheet } from "@/components/anamnesis-export/export-sheet";
@@ -73,8 +78,10 @@ type AnamnesisFormProps = {
   id: string;
   initial: { title: string; patientLabel: string; answers: Answers };
   snapshot: EditableTemplate;
+  templateId: string | null;
   templateTitle: string | null;
-  templateDeleted: boolean;
+  /** O modelo mudou depois da criação: oferece trazer a versão atual. */
+  templateUpdate: TemplateUpdate | null;
   createdAt: string;
   updatedAt: string;
   /** Nome e instituição do perfil, para o cabeçalho do PDF. */
@@ -101,8 +108,9 @@ export function AnamnesisForm({
   id,
   initial,
   snapshot,
+  templateId,
   templateTitle,
-  templateDeleted,
+  templateUpdate,
   createdAt,
   updatedAt,
   author,
@@ -128,6 +136,10 @@ export function AnamnesisForm({
   const version = useRef(0);
   const savedVersion = useRef(0);
   const running = useRef<Promise<void> | null>(null);
+  // Ao sair, a anamnese em branco é apagada, exceto quando a saída é para
+  // editar o modelo (a pessoa volta) ou para recarregar depois de atualizar.
+  const keepOnLeave = useRef(false);
+  const mounted = useRef(false);
 
   useEffect(() => {
     latest.current = { title, patientLabel, answers };
@@ -219,6 +231,21 @@ export function AnamnesisForm({
     };
   }, [flush]);
 
+  // Saiu da página sem preencher nada: apaga a anamnese em branco (decisão 27).
+  // O setTimeout ignora a desmontagem/remontagem do StrictMode em desenvolvimento.
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+      window.setTimeout(() => {
+        if (mounted.current || keepOnLeave.current) return;
+        const { patientLabel: label, answers: current } = latest.current;
+        const blank = !label.trim() && Object.values(current).every((value) => !isAnswered(value));
+        if (blank) void flush().then(() => discardBlankAnamnesis(id));
+      }, 0);
+    };
+  }, [flush, id]);
+
   const onAnswer = useCallback(
     (fieldId: string, value: AnswerValue) => {
       setAnswers((previous) => ({ ...previous, [fieldId]: value }));
@@ -239,6 +266,33 @@ export function AnamnesisForm({
     () => (previewOpen ? buildExport() : null),
     [previewOpen, buildExport],
   );
+
+  function updateFromTemplate() {
+    startBusy(async () => {
+      await flush();
+      if (version.current !== savedVersion.current) {
+        toast.error("Salve as respostas antes de atualizar (confira o aviso na barra abaixo).");
+        return;
+      }
+      const result = await syncAnamnesisWithTemplate(id);
+      if (!result.ok) {
+        toast.error(result.message);
+        return;
+      }
+      keepOnLeave.current = true;
+      toast.success("Anamnese atualizada com a versão atual do modelo.");
+      router.refresh();
+    });
+  }
+
+  function editTemplate() {
+    if (!templateId) return;
+    keepOnLeave.current = true;
+    startBusy(async () => {
+      await flush();
+      router.push(`/modelos/${templateId}?anamnese=${id}`);
+    });
+  }
 
   function duplicate() {
     startBusy(async () => {
@@ -310,13 +364,39 @@ export function AnamnesisForm({
         </div>
 
         <p className="text-sm text-muted-foreground">
-          {templateDeleted
+          {templateId === null
             ? "Modelo de origem excluído"
             : `Modelo: ${templateTitle ?? "—"}`}{" "}
-          · criada em {dateFormatter.format(new Date(createdAt))}. Mudanças no modelo depois não
-          alteram esta anamnese.
+          · criada em {dateFormatter.format(new Date(createdAt))}. Se o modelo mudar, esta
+          anamnese só muda quando você atualizá-la.
         </p>
       </section>
+
+      {templateUpdate ? (
+        <div
+          className="glass flex flex-col gap-3 rounded-2xl border border-primary/30 p-4 sm:flex-row sm:items-center sm:justify-between"
+          role="status"
+        >
+          <div className="flex items-start gap-2.5 text-sm">
+            <RefreshCw className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />
+            <p>
+              <span className="font-medium">O modelo foi atualizado</span>
+              {describeUpdate(templateUpdate)}. Atualize para usar a versão atual; as respostas
+              continuam.
+            </p>
+          </div>
+          <Button
+            type="button"
+            size="lg"
+            className="h-10 shrink-0 rounded-xl px-4"
+            onClick={updateFromTemplate}
+            disabled={busy}
+          >
+            {busy ? <LoaderCircle className="animate-spin" aria-hidden /> : <RefreshCw aria-hidden />}
+            Atualizar esta anamnese
+          </Button>
+        </div>
+      ) : null}
 
       <ol className="flex flex-col gap-3">
         {snapshot.sections.map((section) => (
@@ -368,6 +448,12 @@ export function AnamnesisForm({
                 Copiar texto
               </DropdownMenuItem>
               <DropdownMenuSeparator />
+              {templateId ? (
+                <DropdownMenuItem onSelect={editTemplate}>
+                  <PencilRuler aria-hidden />
+                  Editar modelo
+                </DropdownMenuItem>
+              ) : null}
               <DropdownMenuItem onSelect={duplicate}>
                 <Copy aria-hidden />
                 Duplicar
@@ -448,6 +534,19 @@ export function AnamnesisForm({
       </AlertDialog>
     </div>
   );
+}
+
+function plural(count: number, one: string, many: string): string {
+  return `${count} ${count === 1 ? one : many}`;
+}
+
+/** Ex.: ": 2 campos novos, 1 removido" (vazio se só mudaram rótulos/ordem). */
+function describeUpdate({ added, removed }: TemplateUpdate): string {
+  const parts = [
+    added > 0 ? plural(added, "campo novo", "campos novos") : "",
+    removed > 0 ? plural(removed, "campo removido", "campos removidos") : "",
+  ].filter(Boolean);
+  return parts.length > 0 ? `: ${parts.join(", ")}` : "";
 }
 
 const SectionFields = memo(function SectionFields({

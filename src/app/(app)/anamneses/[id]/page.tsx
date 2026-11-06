@@ -34,8 +34,9 @@ async function AnamnesisLoader({ id }: { id: string }) {
 
   return (
     <AnamnesisForm
-      // Outra anamnese (ex.: depois de duplicar) começa com estado novo.
-      key={anamnesis.id}
+      // Outra anamnese (ex.: depois de duplicar) ou a mesma atualizada com o
+      // modelo começa com estado novo.
+      key={`${anamnesis.id}:${anamnesis.updatedAt}`}
       id={anamnesis.id}
       initial={{
         title: anamnesis.title,
@@ -43,8 +44,9 @@ async function AnamnesisLoader({ id }: { id: string }) {
         answers: anamnesis.answers,
       }}
       snapshot={anamnesis.snapshot}
+      templateId={anamnesis.templateId}
       templateTitle={anamnesis.templateTitle}
-      templateDeleted={anamnesis.templateId === null}
+      templateUpdate={anamnesis.templateUpdate}
       createdAt={anamnesis.createdAt}
       updatedAt={anamnesis.updatedAt}
       author={{ fullName: profile.fullName, institution: profile.institution }}

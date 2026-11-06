@@ -85,6 +85,8 @@ export type TemplateEditorProps = {
   onCreated?: () => void;
   /** Modelo novo: descartar o rascunho. */
   onDiscard?: () => void;
+  /** Edição aberta a partir de uma anamnese: volta para ela depois de salvar. */
+  returnTo?: string;
 };
 
 const EMPTY_ISSUES = emptyIssues();
@@ -99,6 +101,7 @@ export function TemplateEditor({
   onDraftChange,
   onCreated,
   onDiscard,
+  returnTo,
 }: TemplateEditorProps) {
   const router = useRouter();
   const isNew = !templateId;
@@ -277,6 +280,11 @@ export function TemplateEditor({
           return item;
         }),
       );
+      if (returnTo) {
+        toast.success("Modelo salvo. Voltando à anamnese.");
+        router.push(returnTo);
+        return;
+      }
       toast.success("Modelo salvo.");
     });
   }

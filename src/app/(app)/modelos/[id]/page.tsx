@@ -10,24 +10,48 @@ import { getSourceFileLinks, getTemplate } from "@/lib/data/templates";
 
 export const metadata: Metadata = { title: "Editar modelo" };
 
-export default function EditTemplatePage({ params }: PageProps<"/modelos/[id]">) {
+const TITLE = "Editar modelo";
+const DESCRIPTION =
+  "Ajuste títulos, siglas, campos e tipos e reordene arrastando. Anamneses já preenchidas só mudam se você atualizá-las.";
+const BACK_TO_TEMPLATES = { href: "/modelos", label: "Modelos" };
+
+export default function EditTemplatePage({
+  params,
+  searchParams,
+}: PageProps<"/modelos/[id]">) {
   return (
-    <>
-      <PageHeader
-        back={{ href: "/modelos", label: "Modelos" }}
-        title="Editar modelo"
-        description="Ajuste títulos, siglas, campos e tipos e reordene arrastando. Anamneses já preenchidas não mudam."
-      />
-      <Suspense fallback={<EditorSkeleton />}>
-        {params.then(({ id }) => (
-          <EditTemplate id={id} />
-        ))}
-      </Suspense>
-    </>
+    <Suspense
+      fallback={
+        <>
+          <PageHeader back={BACK_TO_TEMPLATES} title={TITLE} description={DESCRIPTION} />
+          <EditorSkeleton />
+        </>
+      }
+    >
+      {Promise.all([params, searchParams]).then(([{ id }, query]) => {
+        // Veio de uma anamnese ("Editar modelo"): voltar para ela.
+        const anamnesisId = z.uuid().safeParse(query.anamnese);
+        const returnTo = anamnesisId.success
+          ? { href: `/anamneses/${anamnesisId.data}`, label: "Voltar à anamnese" }
+          : undefined;
+        return (
+          <>
+            <PageHeader back={returnTo ?? BACK_TO_TEMPLATES} title={TITLE} description={DESCRIPTION} />
+            <EditTemplate id={id} returnTo={returnTo} />
+          </>
+        );
+      })}
+    </Suspense>
   );
 }
 
-async function EditTemplate({ id }: { id: string }) {
+async function EditTemplate({
+  id,
+  returnTo,
+}: {
+  id: string;
+  returnTo?: { href: string; label: string };
+}) {
   if (!z.uuid().safeParse(id).success) notFound();
 
   const [template, specialties] = await Promise.all([getTemplate(id), listSpecialtyOptions()]);
@@ -48,6 +72,7 @@ async function EditTemplate({ id }: { id: string }) {
       }}
       specialties={specialties}
       sourceLinks={sourceLinks}
+      returnTo={returnTo?.href}
     />
   );
 }

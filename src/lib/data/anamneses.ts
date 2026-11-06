@@ -1,8 +1,13 @@
 import "server-only";
 import { requireUser } from "@/lib/auth";
 import { answersSchema, countAnswered, type Answers } from "@/lib/anamneses/answers";
+import { describeTemplateUpdate, type TemplateUpdate } from "@/lib/anamneses/sync";
 import { withLongConduta } from "@/lib/templates/normalize";
-import { editableTemplateSchema, type EditableTemplate } from "@/lib/templates/schema";
+import {
+  editableTemplateSchema,
+  templateSchema,
+  type EditableTemplate,
+} from "@/lib/templates/schema";
 
 export type AnamnesisDetail = {
   id: string;
@@ -13,6 +18,8 @@ export type AnamnesisDetail = {
   templateTitle: string | null;
   snapshot: EditableTemplate;
   answers: Answers;
+  /** O modelo mudou depois que a anamnese foi criada (null se igual ou excluído). */
+  templateUpdate: TemplateUpdate | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -37,7 +44,13 @@ export function parseSnapshot(raw: unknown): EditableTemplate {
   return parsed.success ? withLongConduta(parsed.data) : { sections: [] };
 }
 
-function parseAnswers(raw: unknown): Answers {
+/** Schema atual de um modelo (o que está salvo é sempre válido; null por garantia). */
+export function parseTemplateSchema(raw: unknown): EditableTemplate | null {
+  const parsed = templateSchema.safeParse(raw);
+  return parsed.success ? withLongConduta(parsed.data) : null;
+}
+
+export function parseAnswers(raw: unknown): Answers {
   const parsed = answersSchema.safeParse(raw);
   return parsed.success ? parsed.data : {};
 }
@@ -55,15 +68,21 @@ export async function getAnamnesis(id: string): Promise<AnamnesisDetail | null> 
   if (error) throw new Error("Não foi possível carregar a anamnese.");
   if (!data) return null;
 
+  const snapshot = parseSnapshot(data.template_snapshot);
+  const answers = parseAnswers(data.answers);
+
   let templateTitle: string | null = null;
+  let templateUpdate: TemplateUpdate | null = null;
   if (data.template_id) {
     const { data: template } = await supabase
       .from("templates")
-      .select("title")
+      .select("title, schema")
       .eq("id", data.template_id)
       .eq("user_id", user.id)
       .maybeSingle();
     templateTitle = template?.title ?? null;
+    const current = template ? parseTemplateSchema(template.schema) : null;
+    if (current) templateUpdate = describeTemplateUpdate(snapshot, current, answers)?.update ?? null;
   }
 
   return {
@@ -72,8 +91,9 @@ export async function getAnamnesis(id: string): Promise<AnamnesisDetail | null> 
     patientLabel: data.patient_label ?? "",
     templateId: data.template_id,
     templateTitle,
-    snapshot: parseSnapshot(data.template_snapshot),
-    answers: parseAnswers(data.answers),
+    snapshot,
+    answers,
+    templateUpdate,
     createdAt: data.created_at,
     updatedAt: data.updated_at,
   };
@@ -102,6 +122,8 @@ export async function listAnamneses(options: {
     // Um a mais para saber se há próxima página.
     .range(from, from + HISTORY_PAGE_SIZE);
 
+  // Anamnese em branco (sem respostas nem paciente) não aparece (decisão 27).
+  query = query.or("patient_label.not.is.null,answers.neq.{}");
   if (options.templateId) query = query.eq("template_id", options.templateId);
   const search = options.search?.trim();
   if (search) {
