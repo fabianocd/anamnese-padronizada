@@ -36,7 +36,7 @@ SEÇÕES
 - "title": título por extenso, sem numeração (ex.: "IDENTIFICAÇÃO", "ALIMENTAÇÃO", "EXAME FÍSICO").
 - "abbreviation": use somente estas siglas, quando a seção corresponder: ID (identificação), QP (queixa principal), HDA (história da doença atual), HPP (história patológica pregressa), HF (história familiar), HD (hipótese diagnóstica), DNPM (desenvolvimento neuropsicomotor). Nas demais, "". Exame físico fica por extenso, sem sigla.
 - Seção sem subcampos (ex.: "Queixa Principal:") recebe um único campo long_text com o mesmo rótulo do título.
-- Não crie a seção CONDUTA se ela não existir na ficha (ela é adicionada depois automaticamente). Se existir, mantenha-a.
+- Não crie a seção CONDUTA se ela não existir na ficha (ela é adicionada depois automaticamente). Se existir, mantenha-a, com campos "long_text".
 
 CAMPOS
 - "label": rótulo curto, sem ":" no fim, corrigindo erros óbvios de digitação (ex.: "Identifacação" → "Identificação", "Asculta" → "Ausculta").

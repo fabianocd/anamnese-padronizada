@@ -156,7 +156,8 @@ export function anamnesisToText(document: AnamnesisExport): string {
         "\n",
       );
     })
-    .join("\n");
+    // Linha em branco entre as seções, para ler melhor no prontuário.
+    .join("\n\n");
 }
 
 /** Nome do arquivo: `anamnese-pediatrica-ms-04-11-2026.pdf`. */

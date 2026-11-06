@@ -31,6 +31,8 @@ type FieldRowProps = {
   index: number;
   issues?: EditorIssues["fields"][string];
   autoFocus: boolean;
+  /** Campo da #CONDUTA: sem "Texto curto" (a conduta é sempre texto longo). */
+  conduta?: boolean;
   dispatch: Dispatch<EditorAction>;
 };
 
@@ -40,6 +42,7 @@ export const FieldRow = memo(function FieldRow({
   index,
   issues,
   autoFocus,
+  conduta = false,
   dispatch,
 }: FieldRowProps) {
   const [showHint, setShowHint] = useState(Boolean(field.hint));
@@ -109,7 +112,7 @@ export const FieldRow = memo(function FieldRow({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {FIELD_TYPES.map((type) => (
+                {FIELD_TYPES.filter((type) => !(conduta && type === "short_text")).map((type) => (
                   <SelectItem key={type} value={type}>
                     {FIELD_TYPE_LABELS[type]}
                   </SelectItem>

@@ -12,6 +12,7 @@ import {
 import { buildAnamnesisExport, type AnamnesisExport } from "@/lib/anamneses/export";
 import { getAnamnesis, parseSnapshot } from "@/lib/data/anamneses";
 import { getProfile } from "@/lib/data/profile";
+import { withLongConduta } from "@/lib/templates/normalize";
 import { templateSchema } from "@/lib/templates/schema";
 
 export type ActionResult = { ok: true } | { ok: false; message: string };
@@ -47,7 +48,7 @@ export async function createAnamnesis(formData: FormData): Promise<void> {
     .insert({
       user_id: user.id,
       template_id: template.id,
-      template_snapshot: schema.data,
+      template_snapshot: withLongConduta(schema.data),
       title: template.title.slice(0, ANSWER_LIMITS.title),
       answers: {},
     })

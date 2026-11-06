@@ -125,6 +125,26 @@ export function isCondutaSection(section: { title: string }): boolean {
   return comparable(cleanHeading(section.title)) === CONDUTA;
 }
 
+/**
+ * A `#CONDUTA` é texto corrido: campo de texto curto nela vira texto longo.
+ * Vale para modelos (ao salvar) e para snapshots antigos de anamneses (ao ler).
+ */
+export function withLongConduta<T extends { sections: EditableSection[] }>(template: T): T {
+  return {
+    ...template,
+    sections: template.sections.map((section) =>
+      isCondutaSection(section) && section.fields.some((field) => field.type === "short_text")
+        ? {
+            ...section,
+            fields: section.fields.map((field) =>
+              field.type === "short_text" ? { ...field, type: "long_text" as const } : field,
+            ),
+          }
+        : section,
+    ),
+  };
+}
+
 function condutaSection(fields: TemplateField[] = []): TemplateSection {
   return {
     id: newId(),
@@ -169,7 +189,7 @@ export function normalizeTemplate(raw: AiExtraction): Template {
 
   const limited = sections.slice(0, LIMITS.sections - 1);
   limited.push(condutaSection(condutaFields.slice(0, LIMITS.fieldsPerSection)));
-  return { sections: limited };
+  return withLongConduta({ sections: limited });
 }
 
 export function normalizeTitle(raw: string, fallback = "NOVO MODELO"): string {
@@ -266,5 +286,5 @@ export function prepareTemplateForSave(template: EditableTemplate): EditableTemp
     ? { ...conduta[0], title: CONDUTA, fields: condutaFields }
     : condutaSection();
 
-  return { sections: [...regular, last] };
+  return withLongConduta({ sections: [...regular, last] });
 }

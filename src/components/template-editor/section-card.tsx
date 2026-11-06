@@ -281,6 +281,7 @@ export const SectionCard = memo(function SectionCard({
                     index={fieldIndex}
                     issues={issues.fields[field.id]}
                     autoFocus={focusFieldId === field.id}
+                    conduta={locked}
                     dispatch={dispatch}
                   />
                 ))}

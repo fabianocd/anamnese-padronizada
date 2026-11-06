@@ -1,6 +1,7 @@
 import "server-only";
 import { requireUser } from "@/lib/auth";
 import { answersSchema, countAnswered, type Answers } from "@/lib/anamneses/answers";
+import { withLongConduta } from "@/lib/templates/normalize";
 import { editableTemplateSchema, type EditableTemplate } from "@/lib/templates/schema";
 
 export type AnamnesisDetail = {
@@ -32,7 +33,8 @@ export const HISTORY_PAGE_SIZE = 30;
 
 export function parseSnapshot(raw: unknown): EditableTemplate {
   const parsed = editableTemplateSchema.safeParse(raw);
-  return parsed.success ? parsed.data : { sections: [] };
+  // Snapshots antigos podem ter a #CONDUTA como texto curto.
+  return parsed.success ? withLongConduta(parsed.data) : { sections: [] };
 }
 
 function parseAnswers(raw: unknown): Answers {

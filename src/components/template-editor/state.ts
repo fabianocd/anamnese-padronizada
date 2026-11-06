@@ -136,7 +136,15 @@ export function editorReducer(state: EditorState, action: EditorAction): EditorS
             ? section
             : {
                 ...section,
-                fields: [...section.fields, { id: action.id, label: "", type: "short_text" }],
+                fields: [
+                  ...section.fields,
+                  {
+                    id: action.id,
+                    label: "",
+                    // Na #CONDUTA o padrão é texto longo (texto corrido).
+                    type: isCondutaSection(section) ? "long_text" : "short_text",
+                  },
+                ],
               },
         ),
       };
