@@ -79,6 +79,8 @@ O PDF deve ser limpo e legível: fonte sem serifa, boa hierarquia, cabeçalho co
 - `specialties`: id, user_id, name (único por usuário, sem diferenciar maiúsculas), default_template_id, created_at, updated_at
 - `templates`: id, user_id, title, specialty_id, schema (jsonb), source_file_path, created_at, updated_at
 - `anamneses`: id, user_id, template_id, template_snapshot (jsonb), title, patient_label, answers (jsonb), created_at, updated_at
+- `notes`: id, user_id, title, content, created_at, updated_at (Bloco de Notas)
+- `appointments`: id, user_id, date, start_time, end_time, title, location, notes, series_id (repetição semanal), created_at, updated_at (Calendário)
 - FKs entre tabelas são compostas `(id, user_id)`, então ninguém liga dados a registros de outra pessoa. Migrations ficam em `supabase/migrations/` (mesmas versões aplicadas pelo MCP); tipos em `src/lib/supabase/database.types.ts` (regenerar após cada migration).
 - Guardar um snapshot do schema do modelo na anamnese (ou versionar o modelo), para que editar o modelo depois não quebre anamneses antigas.
 - Toda alteração de banco via migrations.
@@ -117,7 +119,7 @@ Manter um `.env.example` atualizado. Configurar as mesmas variáveis na Vercel.
 
 Referência visual: `docs/referencia-design.jpeg` (só local, fora do Git). Tema escuro vinho (padrão) e claro rosa, escolhidos em Configurações; cards translúcidos (glass) com bordas suaves, cantos arredondados, acento da primária nos botões principais e item ativo da sidebar.
 
-Marca: símbolo em SVG ("P" em contorno com linhas de ficha e um check) em `src/components/app-shell/prontus-mark.tsx`, usado pelo `Brand` (sidebar, barra do celular, login). O degradê do símbolo e do nome usa `--logo-from`/`--logo-to` em `globals.css`, definidos por tema. O ícone da aba é `src/app/icon.svg` (segue o tema do sistema, com as mesmas cores). Nos nomes de projeto (Vercel, GitHub, domínio, `package.json`) continua `anamnese-padronizada`. Sidebar com: Modelos, Nova Anamnese, Histórico, Configurações. Sem barra do topo no desktop (a sidebar já navega); no celular, barra fina com menu e marca. Páginas internas têm link "← Voltar" acima do título (`PageHeader` com `back`). Responsivo (funcionar bem no celular). Interface em português.
+Marca: símbolo em SVG ("P" em contorno com linhas de ficha e um check) em `src/components/app-shell/prontus-mark.tsx`, usado pelo `Brand` (sidebar, barra do celular, login). O degradê do símbolo e do nome usa `--logo-from`/`--logo-to` em `globals.css`, definidos por tema. O ícone da aba é `src/app/icon.svg` (segue o tema do sistema, com as mesmas cores). Nos nomes de projeto (Vercel, GitHub, domínio, `package.json`) continua `anamnese-padronizada`. Sidebar com: Modelos, Nova Anamnese, Histórico, Calendário, Bloco de Notas, Configurações. Sem barra do topo no desktop (a sidebar já navega); no celular, barra fina com menu e marca. Páginas internas têm link "← Voltar" acima do título (`PageHeader` com `back`). Responsivo (funcionar bem no celular). Interface em português.
 
 ## Arquivos de referência
 

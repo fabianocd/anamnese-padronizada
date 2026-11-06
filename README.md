@@ -24,8 +24,10 @@ Envie a ficha de anamnese que você já usa (PDF ou fotos), a IA monta um **mode
   - seções com sigla (ID, QP, HDA, HPP, HF...) e opção de linha única;
   - campos de texto, texto longo, número, data, lista e Sim/Não;
   - arrastar e soltar e prévia ao vivo.
-- **Preenchimento:** formulário gerado a partir do modelo, com salvamento automático e progresso por seção. Cada anamnese guarda uma cópia do modelo, então editar o modelo depois não altera as anamneses antigas.
+- **Preenchimento:** formulário gerado a partir do modelo, com salvamento automático e progresso por seção. Cada anamnese guarda uma cópia do modelo, então editar o modelo depois não altera as anamneses antigas. Se o modelo mudar, a anamnese oferece "Atualizar esta anamnese", sem perder respostas.
 - **Histórico:** busca por título ou paciente, filtro por modelo, duplicar e excluir.
+- **Calendário:** marcação de atendimentos (nome, horário, local e observação), com repetição semanal. Cada dia mostra se há atendimento ou anamnese, e ao clicar aparecem os atendimentos e as anamneses feitas naquele dia.
+- **Bloco de Notas:** notas livres com título e salvamento automático.
 - **Exportação:**
   - prévia em formato de folha;
   - PDF A4 com cabeçalho (modelo, paciente, data, profissional e instituição);
@@ -84,28 +86,29 @@ As chaves ficam só no `.env.local`, que está fora do Git, e nas variáveis da 
 src/
   app/
     (auth)/            entrar, cadastro, recuperar e redefinir senha
-    (app)/             modelos, anamneses, histórico, configurações
+    (app)/             modelos, anamneses, histórico, calendário, notas, configurações
     api/modelos/       rota de extração com o Gemini
     auth/confirm/      destino dos links de e-mail
   components/
     template-editor/   editor de modelo
     anamnesis-form/    formulário de preenchimento
     anamnesis-export/  prévia e PDF
-    app-shell/         sidebar, topo e breadcrumb
+    app-shell/         sidebar e barra do celular
     ui/                componentes shadcn/ui
   lib/
     gemini/            chamada à IA e normalização do resultado
     templates/         schema do modelo (zod) e preparação para salvar
-    anamneses/         respostas e formatador de exportação
+    anamneses/         respostas, formatador de exportação e atualização com o modelo
+    calendar/          datas no fuso de Brasília e validação dos atendimentos
     supabase/          clientes (navegador, servidor, proxy) e tipos gerados
   proxy.ts             renova a sessão e protege as rotas
 supabase/migrations/   migrations do banco
-docs/                  plano, ficha de exemplo e referência de design
+docs/                  plano por fases e decisões
 ```
 
 ## Banco e segurança
 
-- **Tabelas:** `profiles`, `specialties`, `templates` (schema do modelo em JSONB) e `anamneses` (cópia do modelo + respostas em JSONB).
+- **Tabelas:** `profiles`, `specialties`, `templates` (schema do modelo em JSONB) `anamneses` (cópia do modelo + respostas em JSONB), `notes` (Bloco de Notas) e `appointments` (atendimentos do Calendário).
 - **RLS em todas as tabelas:** cada pessoa só acessa os próprios registros (`auth.uid() = user_id`). As chaves estrangeiras são compostas `(id, user_id)`, o que impede ligar dados a registros de outra conta.
 - **Storage:** bucket privado `anamneses-docs`. Cada pessoa só acessa a própria pasta `{user_id}/`, e a leitura é feita por signed URLs.
 - **Chaves no servidor:** `GEMINI_API_KEY` e `SUPABASE_SECRET_KEY` nunca vão para o navegador.

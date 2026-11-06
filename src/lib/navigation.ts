@@ -1,4 +1,5 @@
 import {
+  CalendarDays,
   FilePlus2,
   History,
   LayoutTemplate,
@@ -17,6 +18,7 @@ export const mainNav: NavItem[] = [
   { href: "/modelos", label: "Modelos", icon: LayoutTemplate },
   { href: "/anamneses/nova", label: "Nova Anamnese", icon: FilePlus2 },
   { href: "/historico", label: "Histórico", icon: History },
+  { href: "/calendario", label: "Calendário", icon: CalendarDays },
   { href: "/notas", label: "Bloco de Notas", icon: NotebookPen },
 ];
 
