@@ -4,7 +4,7 @@ Anamnese padronizada: app web para profissionais e estudantes de medicina padron
 
 Envie a ficha de anamnese que você já usa (PDF ou fotos), a IA monta um **modelo** com as seções e os campos, você revisa e, a partir dele, preenche **anamneses** e exporta um PDF no formato padrão.
 
-**Produção:** https://anamnese-padronizada.vercel.app
+**Produção:** https://prontus-med.vercel.app
 
 ```
 #ID: M.S., 2 ANOS, NATURAL DE SOBRAL-CE, ACOMPANHADA PELA MÃE
@@ -122,7 +122,7 @@ O projeto `anamnese-padronizada` na Vercel está ligado a este repositório, e c
 No Supabase (Authentication > URL Configuration):
 
 - a Site URL é o domínio da Vercel;
-- as Redirect URLs incluem `https://anamnese-padronizada.vercel.app/**` e `http://localhost:3010/**`;
+- as Redirect URLs incluem `https://prontus-med.vercel.app/**`, `https://anamnese-padronizada.vercel.app/**` (endereço antigo) e `http://localhost:3010/**`;
 - a opção **Confirm email** está ligada.
 
 Se o domínio mudar, atualize essas URLs.

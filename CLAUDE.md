@@ -142,7 +142,7 @@ Marca: símbolo em SVG ("P" em contorno com linhas de ficha e um check) em `src/
 
 ## Produção
 
-- App em https://anamnese-padronizada.vercel.app (projeto Vercel `anamnese-padronizada`, funções em `iad1`). Push na `main` publica sozinho.
+- App em https://prontus-med.vercel.app (o endereço antigo https://anamnese-padronizada.vercel.app continua ativo; projeto Vercel `anamnese-padronizada`, funções em `iad1`). Push na `main` publica sozinho.
 - No Supabase: Site URL = domínio da Vercel; Redirect URLs com o domínio da Vercel e `http://localhost:3010/**`; **Confirm email** ligado.
 - Se o domínio mudar (ex.: domínio próprio), atualizar Site URL e Redirect URLs no Supabase.
 - Nova variável de ambiente: adicionar no `.env.local`, no `.env.example` e na Vercel.
